@@ -304,6 +304,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy-nanonauts"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "log",
+]
+
+[[package]]
 name = "bevy_a11y"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2752,14 +2760,6 @@ dependencies = [
  "thiserror 1.0.69",
  "tracing",
  "unicode-ident",
-]
-
-[[package]]
-name = "nanonauts"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "log",
 ]
 
 [[package]]
