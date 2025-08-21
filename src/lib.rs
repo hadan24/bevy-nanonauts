@@ -1,7 +1,18 @@
 pub use bevy::prelude::*;
 
-pub mod animation;
-pub mod nanonaut;
+mod animation;
+mod nanonaut;
+mod robot;
+
+pub struct AnimsPlugin;
+impl Plugin for AnimsPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Startup, |mut cmds: Commands| { cmds.spawn(Camera2d); })
+            .add_systems(Startup, nanonaut::spawn_nanonaut)
+            .add_systems(Startup, robot::spawn_robot)
+            .add_systems(Update, animation::animate_sprites);
+    }
+}
 
 // for faster iteration, from https://taintedcoders.com/bevy/windows
 pub fn close_on_esc(
@@ -17,5 +28,3 @@ pub fn close_on_esc(
         }
     }
 }
-
-//141 139

@@ -2,37 +2,36 @@ use bevy::prelude::*;
 use crate::animation;
 
 /*
-- jump
-- controller
+- anim spd
+- spd
 - collider
-- HP
 */
 
 #[derive(Component)]
-struct Nanonaut;
+struct Robot;
 
-pub fn spawn_nanonaut(
+pub fn spawn_robot(
     mut commands: Commands,
     assets: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
 ) {
-    let texture = assets.load("animatedNanonaut.png");
+    let texture = assets.load("animatedRobot.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(
-            UVec2 { x: 181, y: 229 }, 
-            5, 2, 
-            None, None
+            UVec2 { x: 142, y: 141 },
+            3, 3,
+            None, Some(UVec2::Y)
         )
     );
-    let anim_frames = animation::AnimationFrames { first: 0, last: 6 };
+    let anim_frames = animation::AnimationFrames { first: 0, last: 8 };
 
     commands.spawn((
-        Nanonaut,
+        Robot,
         Sprite::from_atlas_image(
-            texture,
+            texture.clone(),
             TextureAtlas { layout, index: anim_frames.first }
         ),
-        Transform::default(),
+        Transform::from_translation(Vec3::X * 150.0),
         anim_frames,
         animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating))
     ));
