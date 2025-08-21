@@ -1,5 +1,8 @@
 pub use bevy::prelude::*;
 
+pub mod animation;
+pub mod nanonaut;
+
 // for faster iteration, from https://taintedcoders.com/bevy/windows
 pub fn close_on_esc(
     mut commands: Commands,
@@ -14,3 +17,5 @@ pub fn close_on_esc(
         }
     }
 }
+
+//141 139
