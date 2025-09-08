@@ -4,6 +4,7 @@ use bevy_nanonauts::*;
 fn main() {
     let window_settings = WindowPlugin {
         primary_window: Some(Window {
+            title: "bevy Nanonauts".into(),
             resolution: WindowResolution::new(800.0, 600.0),
             ..default()
         }),
