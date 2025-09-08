@@ -18,6 +18,20 @@ pub fn spawn_ground(
     commands.spawn((
         Mesh2d(gnd_rect),
         MeshMaterial2d(gnd_color),
-        Transform::from_xyz(0.0, -250.0, 0.0)
+        Transform::from_xyz(0.0, -250.0, 0.1)
+    ));
+}
+
+pub fn spawn_bg(
+    mut commands: Commands,
+    assets: ResMut<AssetServer>
+) {
+    commands.spawn((
+        Sprite::from(assets.load("background.png")),
+        Transform {
+            translation: Vec3 { x: 0.0, y: 75.0, z: 0.0 },
+            scale: Vec3 { x: 0.8, y: 0.8, z: 0.0 },
+            ..Default::default()
+        }
     ));
 }

@@ -18,7 +18,8 @@ impl Plugin for AnimsPlugin {
 pub struct BgPlugin;
 impl Plugin for BgPlugin {
     fn build (&self, app: &mut App) {
-        app.add_systems(Startup, bg::spawn_ground);
+        app.add_systems(Startup, bg::spawn_ground)
+            .add_systems(Startup, bg::spawn_bg);
     }
 }
 
