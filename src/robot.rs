@@ -31,7 +31,10 @@ pub fn spawn_robot(
             texture.clone(),
             TextureAtlas { layout, index: anim_frames.first }
         ),
-        Transform::from_translation(Vec3::X * 150.0),
+        Transform {
+            translation: Vec3 { x: 150.0, y: 0.0, z: 1.0 },
+            ..Default::default()
+        },
         anim_frames,
         animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating))
     ));
