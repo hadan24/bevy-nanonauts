@@ -32,7 +32,7 @@ pub fn spawn_nanonaut(
             texture,
             TextureAtlas { layout, index: anim_frames.first }
         ),
-        Transform::default(),
+        Transform::from_xyz(-220.0, (-270+140) as f32, 1.0),
         anim_frames,
         animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating))
     ));
