@@ -15,7 +15,7 @@ pub fn spawn_ground(
     commands.spawn((
         Mesh2d(gnd_rect),
         MeshMaterial2d(gnd_color),
-        Transform::from_xyz(0.0, -250.0, 0.1)
+        Transform::from_xyz(0.0, crate::GROUND_LEVEL, 0.1)
     ));
 }
 
@@ -48,7 +48,8 @@ pub fn spawn_bg(
 ) {
     let width = 1000.0;
     //let height = 752.0;
-    let y_offset = 75.0;
+    // unsure why this works, but it puts trees just above ground (100px from bottom)
+    let y_offset = 72.0;
     let scale = 0.8;
 
     let bgs = [
@@ -84,6 +85,7 @@ pub fn scroll_bgs(
     for (mut bg, dims) in &mut bgs {
         let real_width = dims.width * dims.scale;
 
+        // offset the scroll reset coord to keep this "is off-screen" check simple
         bg.translation.x = if bg.translation.x < -real_width {
             real_width - alignment_offset
         }

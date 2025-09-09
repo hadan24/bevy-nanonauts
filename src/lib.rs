@@ -7,6 +7,7 @@ mod bg;
 
 pub const WINDOW_WIDTH: f32 = 800.0;
 pub const WINDOW_HEIGHT: f32 = 600.0;
+const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
 
 pub struct AnimsPlugin;
 impl Plugin for AnimsPlugin {
