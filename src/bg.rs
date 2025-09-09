@@ -60,7 +60,11 @@ pub fn spawn_bg(
             ..Default::default()
         },
         BgBundle {
-            img: Sprite::from(assets.load("background.png")),
+            img: Sprite {
+                image: assets.load("background.png"),
+                flip_x: true,   // to hide seam between imgs bc edge colors don't match
+                ..Default::default()
+            },
             transform: Transform
                 ::from_translation(Vec3 {x: width*scale, y: y_offset, z: 0.0})
                 .with_scale(Vec3::splat(scale)),
