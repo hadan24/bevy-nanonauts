@@ -19,7 +19,8 @@ pub struct BgPlugin;
 impl Plugin for BgPlugin {
     fn build (&self, app: &mut App) {
         app.add_systems(Startup, bg::spawn_ground)
-            .add_systems(Startup, bg::spawn_bg);
+            .add_systems(Startup, bg::spawn_bg)
+            .add_systems(Update, bg::scroll_bgs);
     }
 }
 
