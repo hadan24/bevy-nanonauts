@@ -13,9 +13,9 @@ pub struct AnimationFrames {
 
 pub fn animate_sprites(
     time: Res<Time>,
-    mut query: Query<(&AnimationFrames, &mut AnimationTimer, &mut Sprite)>
+    mut sprite: Query<(&AnimationFrames, &mut AnimationTimer, &mut Sprite)>
 ) {
-    for (indices, mut timer, mut sprite) in &mut query {
+    for (indices, mut timer, mut sprite) in &mut sprite {
         timer.tick(time.delta());
 
         if timer.just_finished() {
