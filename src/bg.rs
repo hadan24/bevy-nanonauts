@@ -1,9 +1,5 @@
 use bevy::prelude::*;
 
-/*
-- spd
-*/
-
 #[derive(Component)]
 struct Ground;
 
@@ -12,7 +8,8 @@ pub fn spawn_ground(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>
 ) {
-    let gnd_rect = meshes.add(Rectangle::new(800.0, 100.0));
+    let gnd_rect = meshes.add(Rectangle::new(crate::WINDOW_WIDTH, 100.0));
+    // forest green #228b22
     let gnd_color = materials.add(Color::srgb_u8(34, 139, 34));
 
     commands.spawn((
@@ -26,27 +23,48 @@ pub fn spawn_ground(
 #[derive(Component, Default)]
 pub struct Background;
 
+#[derive(Component)]
+pub struct BgDimensions {
+    width: f32,
+    //height: f32,  // currently not needed
+    scale: f32
+}
+impl Default for BgDimensions {
+    fn default() -> Self {
+        BgDimensions {width: 1.0, scale: 1.0 }  //height: 1.0,
+    }
+}
+
 #[derive(Bundle, Default)]
 struct BgBundle {
     tag: Background,
     img: Sprite,
-    transform: Transform
+    transform: Transform,
+    dims: BgDimensions
 }
 pub fn spawn_bg(
     mut commands: Commands,
     assets: ResMut<AssetServer>
 ) {
+    let width = 1000.0;
+    //let height = 752.0;
+    let y_offset = 75.0;
+    let scale = 0.8;
+
     let bgs = [
         BgBundle {
             img: Sprite::from(assets.load("background.png")),
-            transform: Transform::from_translation(Vec3::Y * 75.0)
-                .with_scale(Vec3::splat(0.8)),
+            transform: Transform::from_translation(Vec3::Y * y_offset)
+                .with_scale(Vec3::splat(scale)),
+            dims: BgDimensions { width, scale },
             ..Default::default()
         },
         BgBundle {
             img: Sprite::from(assets.load("background.png")),
-            transform: Transform::from_translation(Vec3 {x: 800.0, y: 75.0, z: 0.0})
-                .with_scale(Vec3::splat(0.8)),
+            transform: Transform
+                ::from_translation(Vec3 {x: width*scale, y: y_offset, z: 0.0})
+                .with_scale(Vec3::splat(scale)),
+            dims: BgDimensions { width, scale },
             ..Default::default()
         }
     ];
@@ -54,13 +72,19 @@ pub fn spawn_bg(
 }
 
 pub fn scroll_bgs(
-    mut bgs: Query<&mut Transform, With<Background>>,
+    mut bgs: Query<(&mut Transform, &BgDimensions), With<Background>>,
 ) {
-    for mut bg in &mut bgs {
-        bg.translation.x = if bg.translation.x < -800.0 {
-            800.0-4.0
-        } else {
-            bg.translation.x - 2.0
+    let scroll_spd = 2.0;
+    let alignment_offset = scroll_spd * 2.0;
+
+    for (mut bg, dims) in &mut bgs {
+        let real_width = dims.width * dims.scale;
+
+        bg.translation.x = if bg.translation.x < -real_width {
+            real_width - alignment_offset
+        }
+        else {
+            bg.translation.x - scroll_spd
         };
     }
 }

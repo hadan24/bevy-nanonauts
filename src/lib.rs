@@ -5,6 +5,9 @@ mod nanonaut;
 mod robot;
 mod bg;
 
+pub const WINDOW_WIDTH: f32 = 800.0;
+pub const WINDOW_HEIGHT: f32 = 600.0;
+
 pub struct AnimsPlugin;
 impl Plugin for AnimsPlugin {
     fn build(&self, app: &mut App) {

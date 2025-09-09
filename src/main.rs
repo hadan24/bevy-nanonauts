@@ -5,7 +5,7 @@ fn main() {
     let window_settings = WindowPlugin {
         primary_window: Some(Window {
             title: "bevy Nanonauts".into(),
-            resolution: WindowResolution::new(800.0, 600.0),
+            resolution: WindowResolution::new(WINDOW_WIDTH, WINDOW_HEIGHT),
             ..default()
         }),
         ..default()
