@@ -23,28 +23,32 @@ pub fn spawn_ground(
 }
 
 
-#[derive(Component)]
+#[derive(Component, Default)]
 pub struct Background;
 
+#[derive(Bundle, Default)]
+struct BgBundle {
+    tag: Background,
+    img: Sprite,
+    transform: Transform
+}
 pub fn spawn_bg(
     mut commands: Commands,
     assets: ResMut<AssetServer>
 ) {
     let bgs = [
-        (Background,
-        Sprite::from(assets.load("background.png")),
-        Transform {
-            translation: Vec3 { x: 0.0, y: 75.0, z: 0.0 },
-            scale: Vec3 { x: 0.8, y: 0.8, z: 0.0 },
+        BgBundle {
+            img: Sprite::from(assets.load("background.png")),
+            transform: Transform::from_translation(Vec3::Y * 75.0)
+                .with_scale(Vec3::splat(0.8)),
             ..Default::default()
-        }),
-        (Background,
-        Sprite::from(assets.load("background.png")),
-        Transform {
-            translation: Vec3 { x: 800.0-3.75, y: 75.0, z: 0.0 },
-            scale: Vec3 { x: 0.8, y: 0.8, z: 0.0 },
+        },
+        BgBundle {
+            img: Sprite::from(assets.load("background.png")),
+            transform: Transform::from_translation(Vec3 {x: 800.0, y: 75.0, z: 0.0})
+                .with_scale(Vec3::splat(0.8)),
             ..Default::default()
-        })
+        }
     ];
     commands.spawn_batch(bgs);
 }
@@ -54,9 +58,9 @@ pub fn scroll_bgs(
 ) {
     for mut bg in &mut bgs {
         bg.translation.x = if bg.translation.x < -800.0 {
-            800.0 - 10.5
+            800.0-4.0
         } else {
-            bg.translation.x - 3.0
+            bg.translation.x - 2.0
         };
     }
 }
