@@ -31,7 +31,7 @@ pub struct BgDimensions {
 }
 impl Default for BgDimensions {
     fn default() -> Self {
-        BgDimensions {width: 1.0, scale: 1.0 }  //height: 1.0,
+        BgDimensions { width: 1.0, scale: 1.0 }  //height: 1.0,
     }
 }
 

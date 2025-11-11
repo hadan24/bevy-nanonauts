@@ -42,7 +42,7 @@ pub fn spawn_nanonaut(
         ),
         Transform::from_xyz(nanonaut_x, nanonaut_y, 1.0),
         anim_frames,
-        animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating))
+        animation::AnimationTimer(Timer::from_seconds(0.09, TimerMode::Repeating))
     ));
 }
 
