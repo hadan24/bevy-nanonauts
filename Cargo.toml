@@ -5,9 +5,16 @@ edition = "2024"
 
 [dependencies]
 # TODO: remove bevy dynamic linking for release build
-bevy = { version = "0.16.1", features = ["dynamic_linking"] }
+bevy = { version = "0.17.2", features = ["dynamic_linking"] }
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 
 # Enable lots of performance optimization in the dev profile for dependencies.
 [profile.dev.package."*"]
 opt-level = 3
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1
+incremental = false
+debug = false

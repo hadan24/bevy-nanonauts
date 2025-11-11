@@ -8,7 +8,7 @@ pub fn spawn_ground(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>
 ) {
-    let gnd_rect = meshes.add(Rectangle::new(crate::WINDOW_WIDTH, 100.0));
+    let gnd_rect = meshes.add(Rectangle::new(crate::WINDOW_WIDTH as f32, 100.0));
     // forest green #228b22
     let gnd_color = materials.add(Color::srgb_u8(34, 139, 34));
 
