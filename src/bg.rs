@@ -78,19 +78,20 @@ pub fn spawn_bg(
 
 pub fn scroll_bgs(
     mut bgs: Query<(&mut Transform, &BgDimensions), With<Background>>,
+    time: Res<Time>
 ) {
-    let scroll_spd = 2.0;
-    let alignment_offset = scroll_spd * 2.0;
+    let scroll_spd = 350.0;
+    let x_align_offset = 4.0;
 
     for (mut bg, dims) in &mut bgs {
         let real_width = dims.width * dims.scale;
 
         // offset the scroll reset coord to keep this "is off-screen" check simple
         bg.translation.x = if bg.translation.x < -real_width {
-            real_width - alignment_offset
+            real_width - x_align_offset
         }
         else {
-            bg.translation.x - scroll_spd
+            bg.translation.x - (time.delta_secs() * scroll_spd)
         };
     }
 }

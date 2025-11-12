@@ -25,7 +25,7 @@ pub fn spawn_robot(
             None, Some(UVec2::Y)
         )
     );
-    let anim_frames = animation::AnimationFrames { first: 0, last: 8 };
+    let anim_frames = animation::AnimationFrames { first: 0, last: 7 };
 
     commands.spawn((
         Robot,
@@ -33,7 +33,7 @@ pub fn spawn_robot(
             texture.clone(),
             TextureAtlas { layout, index: anim_frames.first }
         ),
-        Transform::from_xyz(150.0, ROBOT_GROUND_LEVEL, 1.0),
+        Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.0),
         anim_frames,
         animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating))
     ));
