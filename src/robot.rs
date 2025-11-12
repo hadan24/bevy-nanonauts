@@ -2,13 +2,15 @@ use bevy::prelude::*;
 use crate::animation;
 
 /*
-- anim spd
 - spd
 - collider
 */
+const ROBOT_WIDTH: u32 = 142;
+const ROBOT_HEIGHT: u32 = 141;
+const ROBOT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((ROBOT_HEIGHT/2) as f32);
 
 #[derive(Component)]
-struct Robot;
+pub struct Robot;
 
 pub fn spawn_robot(
     mut commands: Commands,
@@ -18,7 +20,7 @@ pub fn spawn_robot(
     let texture = assets.load("animatedRobot.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(
-            UVec2 { x: 142, y: 141 },
+            UVec2 { x: ROBOT_WIDTH, y: ROBOT_HEIGHT },
             3, 3,
             None, Some(UVec2::Y)
         )
@@ -31,9 +33,25 @@ pub fn spawn_robot(
             texture.clone(),
             TextureAtlas { layout, index: anim_frames.first }
         ),
-        Transform::from_xyz(150.0, 0.0, 1.0),
+        Transform::from_xyz(150.0, ROBOT_GROUND_LEVEL, 1.0),
         anim_frames,
         animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating))
     ));
 }
 
+pub fn move_robot(
+    transforms: Query<&mut Transform, With<Robot>>,
+    time: Res<Time>
+) {
+    let spd = 650.0;
+    let screen_left = -((crate::WINDOW_WIDTH / 2) as f32);
+
+    for mut t in transforms {
+        t.translation.x = if t.translation.x < (screen_left - ROBOT_WIDTH as f32) {
+            t.translation.x + ((crate::WINDOW_WIDTH * 2) as f32)
+        }
+        else {
+            t.translation.x - (time.delta_secs() * spd)
+        };
+    }
+}

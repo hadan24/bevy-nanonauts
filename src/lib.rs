@@ -15,6 +15,7 @@ impl Plugin for AnimsPlugin {
         app.add_systems(Startup, |mut cmds: Commands| { cmds.spawn(Camera2d); })
             .add_systems(Startup, nanonaut::spawn_nanonaut)
             .add_systems(Startup, robot::spawn_robot)
+            .add_systems(Update, robot::move_robot)
             .add_systems(Update, animation::animate_sprites);
     }
 }
