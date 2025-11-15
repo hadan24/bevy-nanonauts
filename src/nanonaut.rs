@@ -49,19 +49,41 @@ pub fn spawn_nanonaut(
     ));
 }
 
+
+// physics values chosen using method outlined here + minor tweaks to refine feel
+// https://youtu.be/hG9SzQxaCm8?si=zMId1NRJDpq9K1Dk
 pub fn nanonaut_gravity(
     kinematics: Single<(&mut Transform, &mut Velocity), With<Nanonaut>>,
     time: Res<Time>
 ) {
     let (mut transform, mut vel) = kinematics.into_inner();
-    let g = -625.0;
 
     if transform.translation.y > NANONAUT_GROUND_LEVEL {
+        let g = if vel.y > 0.0 { 
+            -800.0
+        } else {    // for a faster fall
+            -1250.0
+        };
+
         vel.y += g * time.delta_secs();
         transform.translation.y += vel.y * time.delta_secs();
     }
     else {
         vel.y = 0.0;
         transform.translation.y = NANONAUT_GROUND_LEVEL;
+    }
+}
+
+pub fn nanonaut_jump(
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    kinematics: Single<(&mut Transform, &mut Velocity), With<Nanonaut>>,
+    time: Res<Time>
+) {
+    let (mut transform, mut vel) = kinematics.into_inner();
+    let jump_spd = 550.0;
+
+    if keyboard_input.pressed(KeyCode::Space) && transform.translation.y <= NANONAUT_GROUND_LEVEL {
+        vel.y = jump_spd;
+        transform.translation.y += time.delta_secs() * vel.y;
     }
 }

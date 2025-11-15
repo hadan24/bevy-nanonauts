@@ -32,7 +32,8 @@ impl Plugin for BgPlugin {
 pub struct GameplayPlugin;
 impl Plugin for GameplayPlugin {
     fn build (&self, app: &mut App) {
-        app.add_systems(FixedUpdate, nanonaut::nanonaut_gravity);
+        app.add_systems(FixedUpdate, nanonaut::nanonaut_gravity)
+            .add_systems(FixedUpdate, nanonaut::nanonaut_jump);
     }
 }
 
