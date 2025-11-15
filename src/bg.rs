@@ -48,7 +48,7 @@ pub fn spawn_bg(
 ) {
     let width = 1000.0;
     //let height = 752.0;
-    // unsure why this works, but it puts trees just above ground (100px from bottom)
+    // unsure why this specific num works, but it puts trees just above ground (100px from bottom)
     let y_offset = 72.0;
     let scale = 0.8;
 
@@ -88,9 +88,11 @@ pub fn scroll_bgs(
 
         // offset the scroll reset coord to keep this "is off-screen" check simple
         bg.translation.x = if bg.translation.x < -real_width {
-            real_width - x_align_offset
+            real_width - x_align_offset - (time.delta_secs() * scroll_spd)
         }
         else {
+            // include `ds * spd` in both branchs to ensure consistency when bg resets coord
+            // for some reason, doesn't work if only written once outside of `if` expression
             bg.translation.x - (time.delta_secs() * scroll_spd)
         };
     }

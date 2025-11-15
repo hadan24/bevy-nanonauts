@@ -2,8 +2,6 @@ use bevy::prelude::*;
 use crate::animation;
 
 /*
-- jump
-- controller
 - collider
 - HP
 */

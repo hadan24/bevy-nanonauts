@@ -2,7 +2,6 @@ use bevy::prelude::*;
 use crate::animation;
 
 /*
-- spd
 - collider
 */
 const ROBOT_WIDTH: u32 = 142;
