@@ -13,7 +13,10 @@ const NANONAUT_HEIGHT: u32 = 200;
 const NANONAUT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((NANONAUT_HEIGHT/2) as f32);
 
 #[derive(Component)]
-struct Nanonaut;
+pub struct Nanonaut;
+
+#[derive(Component, Deref, DerefMut)]
+pub struct Velocity(Vec2);
 
 pub fn spawn_nanonaut(
     mut commands: Commands,
@@ -39,9 +42,26 @@ pub fn spawn_nanonaut(
             texture,
             TextureAtlas { layout, index: anim_frames.first }
         ),
-        Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL, 1.0),
+        Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0),
+        Velocity(Vec2::ZERO),
         anim_frames,
         animation::AnimationTimer(Timer::from_seconds(0.08, TimerMode::Repeating))
     ));
 }
 
+pub fn nanonaut_gravity(
+    kinematics: Single<(&mut Transform, &mut Velocity), With<Nanonaut>>,
+    time: Res<Time>
+) {
+    let (mut transform, mut vel) = kinematics.into_inner();
+    let g = -625.0;
+
+    if transform.translation.y > NANONAUT_GROUND_LEVEL {
+        vel.y += g * time.delta_secs();
+        transform.translation.y += vel.y * time.delta_secs();
+    }
+    else {
+        vel.y = 0.0;
+        transform.translation.y = NANONAUT_GROUND_LEVEL;
+    }
+}

@@ -29,6 +29,13 @@ impl Plugin for BgPlugin {
     }
 }
 
+pub struct GameplayPlugin;
+impl Plugin for GameplayPlugin {
+    fn build (&self, app: &mut App) {
+        app.add_systems(FixedUpdate, nanonaut::nanonaut_gravity);
+    }
+}
+
 // for faster iteration, from https://taintedcoders.com/bevy/windows
 pub fn close_on_esc(
     mut commands: Commands,

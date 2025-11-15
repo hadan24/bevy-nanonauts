@@ -19,6 +19,7 @@ fn main() {
         )
         .add_plugins(bevy_nanonauts::AnimsPlugin)
         .add_plugins(bevy_nanonauts::BgPlugin)
+        .add_plugins(bevy_nanonauts::GameplayPlugin)
         .add_systems(Update, bevy_nanonauts::close_on_esc)
         .run();
 }
