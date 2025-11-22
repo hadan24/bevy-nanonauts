@@ -32,9 +32,9 @@ pub fn spawn_robot(
             texture.clone(),
             TextureAtlas { layout, index: anim_frames.first }
         ),
-        Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.0),
         anim_frames,
-        animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating))
+        animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.0),
     ));
 }
 

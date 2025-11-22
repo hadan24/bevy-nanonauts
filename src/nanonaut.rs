@@ -40,10 +40,10 @@ pub fn spawn_nanonaut(
             texture,
             TextureAtlas { layout, index: anim_frames.first }
         ),
+        anim_frames,
+        animation::AnimationTimer(Timer::from_seconds(0.08, TimerMode::Repeating)),
         Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0),
         Velocity(Vec2::ZERO),
-        anim_frames,
-        animation::AnimationTimer(Timer::from_seconds(0.08, TimerMode::Repeating))
     ));
 }
 
@@ -60,7 +60,7 @@ pub fn nanonaut_gravity(
         let g = if vel.y > 0.0 { 
             -800.0
         } else {    // for a faster fall
-            -1250.0
+            -1600.0
         };
 
         vel.y += g * time.delta_secs();
@@ -78,7 +78,7 @@ pub fn nanonaut_jump(
     time: Res<Time>
 ) {
     let (mut transform, mut vel) = kinematics.into_inner();
-    let jump_spd = 550.0;
+    let jump_spd = 500.0;
 
     if keyboard_input.pressed(KeyCode::Space) && transform.translation.y <= NANONAUT_GROUND_LEVEL {
         vel.y = jump_spd;
