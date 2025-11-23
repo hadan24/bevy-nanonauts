@@ -16,6 +16,12 @@ pub struct Nanonaut;
 #[derive(Component, Deref, DerefMut)]
 pub struct Velocity(Vec2);
 
+#[derive(Bundle)]
+pub struct KinematicsBundle {
+    pub transform: Transform,
+    pub velocity: Velocity
+}
+
 pub fn spawn_nanonaut(
     mut commands: Commands,
     assets: Res<AssetServer>,
@@ -29,21 +35,26 @@ pub fn spawn_nanonaut(
             None, None
         )
     );
-    let anim_frames = animation::AnimationFrames { first: 0, last: 6 };
+    let frames = animation::AnimationFrames::new(0, 6);
+    let animation_bundle = animation::AnimatedSprite {
+        sprite: Sprite::from_atlas_image(
+            texture,
+            TextureAtlas { layout, index: frames.first() }
+        ),
+        frames,
+        timer: animation::AnimationTimer(Timer::from_seconds(0.08, TimerMode::Repeating))
+    };
 
     // put nanonaut on left quarter of window
     let nanonaut_x = -(crate::WINDOW_WIDTH as f32)/2.0 + (crate::WINDOW_WIDTH as f32)*0.25;
 
     commands.spawn((
         Nanonaut,
-        Sprite::from_atlas_image(
-            texture,
-            TextureAtlas { layout, index: anim_frames.first }
-        ),
-        anim_frames,
-        animation::AnimationTimer(Timer::from_seconds(0.08, TimerMode::Repeating)),
-        Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0),
-        Velocity(Vec2::ZERO),
+        animation_bundle,
+        KinematicsBundle {
+            transform: Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0),
+            velocity: Velocity(Vec2::ZERO),
+        }
     ));
 }
 

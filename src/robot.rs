@@ -24,16 +24,19 @@ pub fn spawn_robot(
             None, Some(UVec2::Y)
         )
     );
-    let anim_frames = animation::AnimationFrames { first: 0, last: 7 };
+    let frames = animation::AnimationFrames::new(0, 7);
+    let animation_bundle = animation::AnimatedSprite {
+        sprite: Sprite::from_atlas_image(
+            texture.clone(),
+            TextureAtlas { layout, index: frames.first() }
+        ),
+        frames,
+        timer: animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+    };
 
     commands.spawn((
         Robot,
-        Sprite::from_atlas_image(
-            texture.clone(),
-            TextureAtlas { layout, index: anim_frames.first }
-        ),
-        anim_frames,
-        animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
+        animation_bundle,
         Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.0),
     ));
 }

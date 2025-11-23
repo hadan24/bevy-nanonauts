@@ -7,19 +7,39 @@ pub struct AnimationTimer(pub Timer);
 
 #[derive(Component)]
 pub struct AnimationFrames {
-    pub first: usize,
-    pub last: usize
+    first: usize,
+    last: usize
+}
+impl AnimationFrames {
+    pub fn new(first: usize, last: usize) -> Self {
+        Self {first, last}
+    }
+
+    pub fn first(&self) -> usize {
+        self.first
+    }
+
+    pub fn last(&self) -> usize {
+        self.last
+    }
+}
+
+#[derive(Bundle)]
+pub struct AnimatedSprite {
+    pub sprite: Sprite,
+    pub frames: AnimationFrames,
+    pub timer: AnimationTimer
 }
 
 pub fn animate_sprites(
     time: Res<Time>,
-    mut sprite: Query<(&AnimationFrames, &mut AnimationTimer, &mut Sprite)>
+    mut sprites: Query<(&mut Sprite, &AnimationFrames, &mut AnimationTimer)>
 ) {
-    for (indices, mut timer, mut sprite) in &mut sprite {
+    for (mut sprite, indices, mut timer) in &mut sprites {
         timer.tick(time.delta());
 
         if timer.just_finished() && let Some(atlas) = &mut sprite.texture_atlas {
-            atlas.index = if atlas.index == indices.last {
+            atlas.index = if atlas.index == indices.last() {
                 indices.first
             } else {
                 atlas.index + 1
