@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::animation;
+use crate::{animation, Dimensions};
 
 /*
 - collider
@@ -27,10 +27,11 @@ pub fn spawn_nanonaut(
     assets: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
 ) {
+    let dims = Dimensions(UVec2 { x: NANONAUT_WIDTH, y: NANONAUT_HEIGHT });
     let texture = assets.load("animatedNanonaut.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(
-            UVec2 { x: NANONAUT_WIDTH, y: NANONAUT_HEIGHT }, 
+            dims.0,
             5, 2, 
             None, None
         )
@@ -50,6 +51,7 @@ pub fn spawn_nanonaut(
 
     commands.spawn((
         Nanonaut,
+        dims,
         animation_bundle,
         KinematicsBundle {
             transform: Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0),

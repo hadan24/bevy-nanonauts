@@ -9,6 +9,9 @@ pub const WINDOW_WIDTH: u32 = 800;
 pub const WINDOW_HEIGHT: u32 = 600;
 const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
 
+#[derive(Component, Deref, DerefMut)]
+pub struct Dimensions(UVec2);
+
 pub struct AnimsPlugin;
 impl Plugin for AnimsPlugin {
     fn build(&self, app: &mut App) {
@@ -32,8 +35,12 @@ impl Plugin for BgPlugin {
 pub struct GameplayPlugin;
 impl Plugin for GameplayPlugin {
     fn build (&self, app: &mut App) {
-        app.add_systems(FixedUpdate, nanonaut::nanonaut_gravity)
-            .add_systems(FixedUpdate, nanonaut::nanonaut_jump);
+        let systems = (
+            nanonaut::nanonaut_gravity,
+            nanonaut::nanonaut_jump,
+            collision::detect_collision
+        ).chain();
+        app.add_systems(FixedUpdate, systems);
     }
 }
 

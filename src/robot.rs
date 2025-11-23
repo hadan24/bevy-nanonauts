@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::animation;
+use crate::{animation, Dimensions};
 
 /*
 - collider
@@ -16,10 +16,11 @@ pub fn spawn_robot(
     assets: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
 ) {
+    let dims = Dimensions(UVec2 { x: ROBOT_WIDTH, y: ROBOT_HEIGHT });
     let texture = assets.load("animatedRobot.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(
-            UVec2 { x: ROBOT_WIDTH, y: ROBOT_HEIGHT },
+            dims.0,
             3, 3,
             None, Some(UVec2::Y)
         )
@@ -36,6 +37,7 @@ pub fn spawn_robot(
 
     commands.spawn((
         Robot,
+        dims,
         animation_bundle,
         Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.0),
     ));
