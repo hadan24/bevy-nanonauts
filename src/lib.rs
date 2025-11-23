@@ -1,6 +1,7 @@
 pub use bevy::prelude::*;
 
 mod animation;
+mod collision;
 mod nanonaut;
 mod robot;
 mod bg;

@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 use crate::{animation, Dimensions};
 
-/*
-- collider
-*/
+
 const ROBOT_WIDTH: u32 = 142;
 const ROBOT_HEIGHT: u32 = 141;
 const ROBOT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((ROBOT_HEIGHT/2) as f32);
