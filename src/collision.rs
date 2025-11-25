@@ -10,7 +10,7 @@ use crate::{
 
 
 #[derive(Event)]
-struct NanonautCollided;
+pub struct NanonautCollided;
 
 fn dimensions_to_aabb(location: &Transform, dims: &Dimensions) -> Aabb2d {
     let location = location.translation.truncate();
@@ -22,11 +22,11 @@ fn dimensions_to_aabb(location: &Transform, dims: &Dimensions) -> Aabb2d {
     }
 }
 
-// AABB dimensions tweaked w/ trial+error :(
+// AABB dimensions tweaked w/ trial+error
 pub fn detect_collision(
     mut commands: Commands,
     nanonaut: Single<(&Transform, &Dimensions), With<Nanonaut>>,
-    robots: Query<(&Transform, &Dimensions), With<Robot>>,
+    robots: Query<(&Transform, &Dimensions), With<Robot>>
 ) {
     let (location, dims) = nanonaut.into_inner();
     let raw = dimensions_to_aabb(location, dims);

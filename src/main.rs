@@ -6,6 +6,7 @@ fn main() {
         primary_window: Some(Window {
             title: "bevy Nanonauts".into(),
             resolution: WindowResolution::new(WINDOW_WIDTH, WINDOW_HEIGHT),
+            //resizable: false,
             ..default()
         }),
         ..default()
