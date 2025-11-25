@@ -1,8 +1,5 @@
 use bevy::prelude::*;
 
-#[derive(Component)]
-struct Ground;
-
 pub fn spawn_ground(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,

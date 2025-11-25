@@ -5,8 +5,9 @@ edition = "2024"
 
 [dependencies]
 # TODO: remove bevy dynamic linking for release build
-bevy = { git = "https://github.com/bevyengine/bevy.git", features = ["dynamic_linking"] }
+bevy = { git = "https://github.com/bevyengine/bevy.git", rev = "7ad5fb7", features = ["dynamic_linking"] }
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
+syn = { version = "2.0.111" }
 
 # Enable lots of performance optimization in the dev profile for dependencies.
 [profile.dev.package."*"]

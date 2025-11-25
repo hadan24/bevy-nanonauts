@@ -1,6 +1,7 @@
 pub use bevy::prelude::*;
 
 mod animation;
+mod camera;
 mod collision;
 mod nanonaut;
 mod robot;
@@ -16,7 +17,7 @@ pub struct Dimensions(UVec2);
 pub struct AnimsPlugin;
 impl Plugin for AnimsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, |mut cmds: Commands| { cmds.spawn(Camera2d); })
+        app.add_systems(Startup, camera::setup_camera)
             .add_systems(Startup, nanonaut::spawn_nanonaut)
             .add_systems(Startup, robot::spawn_robot)
             .add_systems(Update, robot::move_robot)
