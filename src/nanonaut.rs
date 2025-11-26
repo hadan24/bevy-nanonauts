@@ -2,7 +2,6 @@ use bevy::prelude::*;
 use crate::{animation, Dimensions};
 
 /*
-- collider
 - HP
 */
 const NANONAUT_WIDTH: u32 = 148;

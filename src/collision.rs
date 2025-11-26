@@ -38,12 +38,11 @@ pub fn detect_collision(
     for (location, dims) in &robots {
         let raw = dimensions_to_aabb(location, dims);
         let robot_box = Aabb2d {
-            min: raw.min + Vec2 {x: 15.0, y: 5.0},
-            max: raw.max + Vec2 {x: -25.0, y: -15.0}
+            min: raw.min + Vec2::new(15.0, 5.0),
+            max: raw.max + Vec2::new(-25.0, -15.0)
         };
 
         if nanonaut_box.intersects(&robot_box) {
-            println!("Collided");
             commands.trigger(NanonautCollided);
         }
     }
