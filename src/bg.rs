@@ -5,7 +5,7 @@ pub fn spawn_ground(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>
 ) {
-    let gnd_rect = meshes.add(Rectangle::new(crate::WINDOW_WIDTH as f32, 100.0));
+    let gnd_rect = meshes.add(Rectangle::new((crate::WINDOW_WIDTH as f32) * 2.0, 100.0));
     // forest green #228b22
     let gnd_color = materials.add(Color::srgb_u8(34, 139, 34));
 
@@ -17,10 +17,10 @@ pub fn spawn_ground(
 }
 
 
-#[derive(Component, Default)]
+#[derive(Component, Copy, Clone)]
 pub struct Background;
 
-#[derive(Component)]
+#[derive(Component, Copy, Clone)]
 pub struct BgDimensions {
     width: f32,
     //height: f32,  // currently not needed
@@ -32,10 +32,11 @@ impl Default for BgDimensions {
     }
 }
 
-#[derive(Bundle, Default)]
+const SCREEN_LEFT: f32 = -(crate::WINDOW_WIDTH as f32) / 2.0;
+#[derive(Bundle)]
 struct BgBundle {
     tag: Background,
-    img: Sprite,
+    sprite: Sprite,
     transform: Transform,
     dims: BgDimensions
 }
@@ -48,27 +49,39 @@ pub fn spawn_bg(
     // unsure why this specific num works, but it puts trees just above ground (100px from bottom)
     let y_offset = 72.0;
     let scale = 0.8;
+    let real_width = width * scale;
+    let start_x = SCREEN_LEFT + (real_width / 2.0);
+    let bg_img = assets.load("background.png");
+
+    let first_bg = BgBundle {
+        tag: Background,
+        sprite: Sprite::from(bg_img.clone()),
+        transform: Transform
+            ::from_translation(Vec3::new(start_x, y_offset, 0.0))
+            .with_scale(Vec3::splat(scale)),
+        dims: BgDimensions { width, scale },
+    };
 
     let bgs = [
         BgBundle {
-            img: Sprite::from(assets.load("background.png")),
-            transform: Transform::from_translation(Vec3::Y * y_offset)
-                .with_scale(Vec3::splat(scale)),
-            dims: BgDimensions { width, scale },
-            ..Default::default()
-        },
-        BgBundle {
-            img: Sprite {
-                image: assets.load("background.png"),
+            sprite: Sprite {
+                image: bg_img,
                 flip_x: true,   // to hide seam between imgs bc edge colors don't match
                 ..Default::default()
             },
             transform: Transform
-                ::from_translation(Vec3 {x: width*scale, y: y_offset, z: 0.0})
+                ::from_translation(Vec3::new(start_x + real_width, y_offset, 0.0))
                 .with_scale(Vec3::splat(scale)),
-            dims: BgDimensions { width, scale },
-            ..Default::default()
-        }
+            ..first_bg
+        },
+        BgBundle {
+            sprite: first_bg.sprite.clone(),
+            transform: Transform
+                ::from_translation(Vec3::new(start_x + (real_width * 2.0), y_offset, 0.0))
+                .with_scale(Vec3::splat(scale)),
+            ..first_bg
+        },
+        first_bg    // don't move first_bg till after copying/cloning all we need
     ];
     commands.spawn_batch(bgs);
 }
@@ -78,19 +91,16 @@ pub fn scroll_bgs(
     time: Res<Time>
 ) {
     let scroll_spd = 350.0;
-    let x_align_offset = 4.0;
+    //let x_align_offset = 4.0;
 
     for (mut bg, dims) in &mut bgs {
         let real_width = dims.width * dims.scale;
+        let right_edge = bg.translation.x + (real_width / 2.0);
 
-        // offset the scroll reset coord to keep this "is off-screen" check simple
-        bg.translation.x = if bg.translation.x < -real_width {
-            real_width - x_align_offset - (time.delta_secs() * scroll_spd)
+        // -100 to ENSURE furthest left img is off-screen (avoids empty space during shakes)
+        if right_edge < (SCREEN_LEFT - 100.0) {
+            bg.translation.x += real_width * 3.0;// - x_align_offset;
         }
-        else {
-            // include `ds * spd` in both branchs to ensure consistency when bg resets coord
-            // for some reason, doesn't work if only written once outside of `if` expression
-            bg.translation.x - (time.delta_secs() * scroll_spd)
-        };
+        bg.translation.x -= time.delta_secs()*scroll_spd;
     }
 }
