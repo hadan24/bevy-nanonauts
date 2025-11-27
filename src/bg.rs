@@ -42,7 +42,7 @@ impl Default for BgDimensions {
 }
 
 const SCREEN_LEFT: f32 = -(crate::WINDOW_WIDTH as f32) / 2.0;
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 struct BgBundle {
     tag: Background,
     sprite: Sprite,
@@ -53,12 +53,11 @@ pub fn spawn_bg(
     mut commands: Commands,
     assets: ResMut<AssetServer>
 ) {
-    let width = 1000.0;
     //let height = 752.0;
     // unsure why this specific num works, but it puts trees just above ground (100px from bottom)
     let y_offset = 72.0;
-    let scale = 0.8;
-    let real_width = width * scale;
+    let dims = BgDimensions { width: 1000.0, scale: 0.8 };
+    let real_width = dims.width * dims.scale;
     let start_x = SCREEN_LEFT + (real_width / 2.0);
     let bg_img = assets.load("background.png");
 
@@ -67,30 +66,38 @@ pub fn spawn_bg(
         sprite: Sprite::from(bg_img.clone()),
         transform: Transform
             ::from_translation(Vec3::new(start_x, y_offset, 0.0))
-            .with_scale(Vec3::splat(scale)),
-        dims: BgDimensions { width, scale },
+            .with_scale(Vec3::splat(dims.scale)),
+        dims
+    };
+    let flipped_bg = BgBundle {
+        sprite: Sprite {
+            image: bg_img.clone(),
+            flip_x: true,   // to hide seam between imgs bc edge colors don't match
+            ..Default::default()
+        },
+        transform: Transform
+            ::from_translation(Vec3::new(start_x + real_width, y_offset, 0.0))
+            .with_scale(Vec3::splat(dims.scale)),
+        ..first_bg
     };
 
     let bgs = [
         BgBundle {
-            sprite: Sprite {
-                image: bg_img,
-                flip_x: true,   // to hide seam between imgs bc edge colors don't match
-                ..Default::default()
-            },
-            transform: Transform
-                ::from_translation(Vec3::new(start_x + real_width, y_offset, 0.0))
-                .with_scale(Vec3::splat(scale)),
-            ..first_bg
-        },
-        BgBundle {
             sprite: first_bg.sprite.clone(),
             transform: Transform
                 ::from_translation(Vec3::new(start_x + (real_width * 2.0), y_offset, 0.0))
-                .with_scale(Vec3::splat(scale)),
+                .with_scale(Vec3::splat(dims.scale)),
             ..first_bg
         },
-        first_bg    // don't move first_bg till after copying/cloning all we need
+        BgBundle {
+            sprite: flipped_bg.sprite.clone(),
+            transform: Transform
+                ::from_translation(Vec3::new(start_x + (real_width * 3.0), y_offset, 0.0))
+                .with_scale(Vec3::splat(dims.scale)),
+            ..flipped_bg
+        },
+        first_bg,   // don't move first_bg till after copying/cloning all we need
+        flipped_bg
     ];
     commands.spawn_batch(bgs);
 }
@@ -100,6 +107,7 @@ pub fn scroll_bgs(
     time: Res<Time>
 ) {
     let scroll_spd = 350.0;
+    let num_imgs = bgs.count() as f32;
     //let x_align_offset = 4.0;
 
     for (mut bg, dims) in &mut bgs {
@@ -108,7 +116,7 @@ pub fn scroll_bgs(
 
         // -100 to ENSURE furthest left img is off-screen (avoids empty space during shakes)
         if right_edge < (SCREEN_LEFT - 100.0) {
-            bg.translation.x += real_width * 3.0;// - x_align_offset;
+            bg.translation.x += real_width * num_imgs;// - x_align_offset;
         }
         bg.translation.x -= time.delta_secs()*scroll_spd;
     }
