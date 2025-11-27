@@ -17,7 +17,7 @@ pub struct Dimensions(UVec2);
 pub struct AnimsPlugin;
 impl Plugin for AnimsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, camera::setup_camera)
+        app.add_plugins(camera::CameraPlugin)
             .add_systems(Startup, nanonaut::spawn_nanonaut)
             .add_systems(Startup, robot::spawn_robot)
             .add_systems(Update, robot::move_robot)
