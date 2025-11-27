@@ -1,5 +1,14 @@
 use bevy::prelude::*;
 
+pub struct BgPlugin;
+impl Plugin for BgPlugin {
+    fn build (&self, app: &mut App) {
+        app.add_systems(Startup, spawn_ground)
+            .add_systems(Startup, spawn_bg)
+            .add_systems(Update, scroll_bgs);
+    }
+}
+
 pub fn spawn_ground(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,

@@ -11,26 +11,19 @@ pub const WINDOW_WIDTH: u32 = 800;
 pub const WINDOW_HEIGHT: u32 = 600;
 const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
 
+pub use bg::BgPlugin;
+pub use camera::CameraPlugin;
+
 #[derive(Component, Deref, DerefMut)]
 pub struct Dimensions(UVec2);
 
 pub struct AnimsPlugin;
 impl Plugin for AnimsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(camera::CameraPlugin)
-            .add_systems(Startup, nanonaut::spawn_nanonaut)
+        app.add_systems(Startup, nanonaut::spawn_nanonaut)
             .add_systems(Startup, robot::spawn_robot)
             .add_systems(Update, robot::move_robot)
             .add_systems(Update, animation::animate_sprites);
-    }
-}
-
-pub struct BgPlugin;
-impl Plugin for BgPlugin {
-    fn build (&self, app: &mut App) {
-        app.add_systems(Startup, bg::spawn_ground)
-            .add_systems(Startup, bg::spawn_bg)
-            .add_systems(Update, bg::scroll_bgs);
     }
 }
 
