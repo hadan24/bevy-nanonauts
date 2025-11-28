@@ -4,21 +4,18 @@ use bevy::prelude::*;
 use crate::collision::NanonautCollided;
 use rand::Rng;
 
-pub struct CameraPlugin;
-impl Plugin for CameraPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_camera)
-            .add_systems(PreUpdate, reset_camera)
-            /*
-                Transform = local to entity, is relative to parent frame of reference
-                GlobalTransform = managed by Bevy, the FINAL transform for used rendering
-                TransformSystems::Propagate = system set in PostUpdate
-                    that sends this entity's transform updates to childrens' GlobalTransform
-            */
-            // apply shake before propagating changes to ensure that
-            // camera's global transform + its children render w/ proper transforms
-            .add_systems(PostUpdate, shake_camera.before(TransformSystems::Propagate));
-    }
+pub fn camera_plugin(app: &mut App) {
+    app.add_systems(Startup, setup_camera)
+        .add_systems(PreUpdate, reset_camera)
+    /*
+        Transform = local to entity, is relative to parent frame of reference
+        GlobalTransform = managed by Bevy, the FINAL transform for used rendering
+        TransformSystems::Propagate = system set in PostUpdate
+            that sends this entity's transform updates to childrens' GlobalTransform
+    */
+    // apply shake before propagating changes to ensure that
+    // camera's global transform + its children render w/ proper transforms
+        .add_systems(PostUpdate, shake_camera.before(TransformSystems::Propagate));
 }
 
 #[derive(Component, Default)]
@@ -75,13 +72,13 @@ fn shake_camera(
     
     // apply shake
     let multiplier = 255.0 * config.max_translation * state.trauma * state.trauma;
-    // let mut rng = rand::rng();
-    // let shake_x = rng.random::<f32>() * multiplier;
-    // let shake_y = rng.random::<f32>() * multiplier;
-    let rng = perlin_noise::PerlinNoise::new();
-    let t = time.elapsed_secs_f64() * (config.noise_speed as f64);
-    let shake_x = (rng.get(t + 100.0) as f32) * multiplier;
-    let shake_y = (rng.get(t + 200.0) as f32) * multiplier;
+    let mut rng = rand::rng();
+    let shake_x = rng.random::<f32>() * multiplier;
+    let shake_y = rng.random::<f32>() * multiplier;
+    // let rng = perlin_noise::PerlinNoise::new();
+    // let t = time.elapsed_secs_f64() * (config.noise_speed as f64);
+    // let shake_x = (rng.get(t + 100.0) as f32) * multiplier;
+    // let shake_y = (rng.get(t + 200.0) as f32) * multiplier;
     transform.translation += Vec3::new(shake_x, shake_y, 0.0);
 
     // gradually phase out shakes

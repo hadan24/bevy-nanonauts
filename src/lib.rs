@@ -11,32 +11,25 @@ pub const WINDOW_WIDTH: u32 = 800;
 pub const WINDOW_HEIGHT: u32 = 600;
 const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
 
-pub use bg::BgPlugin;
-pub use camera::CameraPlugin;
-
 #[derive(Component, Deref, DerefMut)]
 pub struct Dimensions(UVec2);
 
-pub struct AnimsPlugin;
-impl Plugin for AnimsPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Startup, nanonaut::spawn_nanonaut)
-            .add_systems(Startup, robot::spawn_robot)
-            .add_systems(Update, robot::move_robot)
-            .add_systems(Update, animation::animate_sprites);
-    }
+pub use bg::backgrounds_plugin;
+pub use camera::camera_plugin;
+
+pub fn animations_plugin(app: &mut App) {
+    app.add_systems(Startup, nanonaut::spawn_nanonaut)
+        .add_systems(Startup, robot::spawn_robot)
+        .add_systems(Update, robot::move_robot)
+        .add_systems(Update, animation::animate_sprites);
 }
 
-pub struct GameplayPlugin;
-impl Plugin for GameplayPlugin {
-    fn build (&self, app: &mut App) {
-        let systems = (
-            nanonaut::nanonaut_gravity,
-            nanonaut::nanonaut_jump,
-            collision::detect_collision
-        ).chain();
-        app.add_systems(FixedUpdate, systems);
-    }
+pub fn gameplay_plugin(app: &mut App) {
+    app.add_systems(FixedUpdate, (
+        nanonaut::nanonaut_gravity,
+        nanonaut::nanonaut_jump,
+        collision::detect_collision
+    ).chain());
 }
 
 // for faster iteration, from https://taintedcoders.com/bevy/windows

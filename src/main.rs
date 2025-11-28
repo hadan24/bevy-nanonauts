@@ -18,10 +18,10 @@ fn main() {
             // nearest sampling, to prevent white outlines on sprites
             .set(ImagePlugin::default_nearest())
         )
-        .add_plugins(bevy_nanonauts::CameraPlugin)
-        .add_plugins(bevy_nanonauts::AnimsPlugin)
-        .add_plugins(bevy_nanonauts::BgPlugin)
-        .add_plugins(bevy_nanonauts::GameplayPlugin)
+        .add_plugins(bevy_nanonauts::camera_plugin)
+        .add_plugins(bevy_nanonauts::animations_plugin)
+        .add_plugins(bevy_nanonauts::backgrounds_plugin)
+        .add_plugins(bevy_nanonauts::gameplay_plugin)
         .add_systems(Update, bevy_nanonauts::close_on_esc)
         .run();
 }
