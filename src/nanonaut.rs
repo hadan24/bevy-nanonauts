@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{animation, Dimensions};
+use crate::animation;
 
 /*
 - HP
@@ -26,7 +26,7 @@ pub fn spawn_nanonaut(
     assets: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
 ) {
-    let dims = Dimensions(UVec2 { x: NANONAUT_WIDTH, y: NANONAUT_HEIGHT });
+    let dims = crate::Dimensions(UVec2 { x: NANONAUT_WIDTH, y: NANONAUT_HEIGHT });
     let texture = assets.load("animatedNanonaut.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(

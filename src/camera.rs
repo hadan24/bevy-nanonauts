@@ -11,7 +11,7 @@ pub fn camera_plugin(app: &mut App) {
         Transform = local to entity, is relative to parent frame of reference
         GlobalTransform = managed by Bevy, the FINAL transform for used rendering
         TransformSystems::Propagate = system set in PostUpdate
-            that sends this entity's transform updates to childrens' GlobalTransform
+            that sends this entity's transform updates to childrens' GlobalTransforms
     */
     // apply shake before propagating changes to ensure that
     // camera's global transform + its children render w/ proper transforms
@@ -23,7 +23,6 @@ struct CameraShakeState {
     trauma: f32,
     original_position: Transform
 }
-
 #[derive(Component)]
 #[require(CameraShakeState)]
 struct CameraShakeConfig {
@@ -66,8 +65,7 @@ fn shake_camera(
 ) {
     let (mut transform, mut state, config) = camera.into_inner();
 
-    // to restore camera position after each frame, allowing rendering code
-    // to not care about camera's changing position
+    // to restore camera position after each frame, allowing rendering to ignore shaking
     state.original_position = *transform;
     
     // apply shake

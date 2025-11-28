@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{animation, Dimensions};
+use crate::animation;
 
 
 const ROBOT_WIDTH: u32 = 142;
@@ -14,7 +14,7 @@ pub fn spawn_robot(
     assets: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
 ) {
-    let dims = Dimensions(UVec2 { x: ROBOT_WIDTH, y: ROBOT_HEIGHT });
+    let dims = crate::Dimensions(UVec2 { x: ROBOT_WIDTH, y: ROBOT_HEIGHT });
     let texture = assets.load("animatedRobot.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(
@@ -26,7 +26,7 @@ pub fn spawn_robot(
     let frames = animation::AnimationFrames::new(0, 7);
     let animation_bundle = animation::AnimatedSprite {
         sprite: Sprite::from_atlas_image(
-            texture.clone(),
+            texture,
             TextureAtlas { layout, index: frames.first() }
         ),
         frames,
