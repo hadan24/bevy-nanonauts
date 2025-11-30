@@ -11,10 +11,10 @@ const NANONAUT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((NANONAUT_HEIGHT/2) as
 #[derive(Component)]
 pub struct Nanonaut;
 
-#[derive(Component, Clone, Copy)]
+#[derive(Component)]
 pub struct Hp(f32);
 impl Hp {
-    pub fn value(self) -> f32 {
+    pub fn value(&self) -> f32 {
         self.0
     }
 }
