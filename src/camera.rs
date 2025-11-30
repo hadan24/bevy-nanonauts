@@ -31,9 +31,7 @@ struct CameraShakeConfig {
     noise_speed: f32,
 }
 
-fn setup_camera(
-    mut commands: Commands
-) {
+fn setup_camera(mut commands: Commands) {
     commands.spawn((
         Camera2d,
         Observer::new(increase_trauma),
@@ -43,7 +41,6 @@ fn setup_camera(
             noise_speed: 20.0
         }
     ));
-
 }
 
 fn increase_trauma(

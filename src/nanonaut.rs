@@ -4,9 +4,7 @@ use crate::{
     collision::NanonautCollided
 };
 
-/*
-- HP
-*/
+
 const NANONAUT_WIDTH: u32 = 148;
 const NANONAUT_HEIGHT: u32 = 200;
 pub const MAX_HP: f32 = 100.0;
@@ -26,11 +24,10 @@ impl Hp {
 
 #[derive(Component, Deref, DerefMut)]
 pub struct Velocity(Vec2);
-
 #[derive(Bundle)]
-pub struct KinematicsBundle {
-    pub transform: Transform,
-    pub velocity: Velocity
+struct KinematicsBundle {
+    transform: Transform,
+    velocity: Velocity
 }
 
 pub fn spawn_nanonaut(
@@ -112,7 +109,7 @@ pub fn nanonaut_jump(
     }
 }
 
-pub fn nanonaut_damage(
+fn nanonaut_damage(
     _collided: On<NanonautCollided>,
     mut hp: Single<&mut Hp, With<Nanonaut>>
 ) {

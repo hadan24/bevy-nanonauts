@@ -23,7 +23,7 @@ fn dimensions_to_aabb(location: &Transform, dims: &Dimensions) -> Aabb2d {
 }
 
 // AABB dimensions tweaked w/ trial+error
-pub fn detect_collision(
+pub fn detect_collisions(
     mut commands: Commands,
     nanonaut: Single<(&Transform, &Dimensions), With<Nanonaut>>,
     robots: Query<(&Transform, &Dimensions), With<Robot>>
@@ -31,8 +31,8 @@ pub fn detect_collision(
     let (location, dims) = nanonaut.into_inner();
     let raw = dimensions_to_aabb(location, dims);
     let nanonaut_box = Aabb2d {
-        min: raw.min + Vec2 {x: 25.0, y: 5.0},
-        max: raw.max + Vec2 {x: -40.0, y: -10.0}
+        min: raw.min + Vec2::new(25.0, 5.0),
+        max: raw.max + Vec2::new(-40.0, -10.0)
     };
     
     for (location, dims) in &robots {

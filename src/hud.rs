@@ -10,9 +10,7 @@ pub fn hud_plugin(app: &mut App) {
         .add_systems(Update, update_hp_bar);
 }
 
-fn spawn_ui(
-    mut commands: Commands
-) {
+fn spawn_ui(mut commands: Commands) {
     let container = Node {
         display: Display::Flex,
         width: Val::Percent(100.0),

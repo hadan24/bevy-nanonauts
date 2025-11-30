@@ -25,12 +25,11 @@ pub fn animations_plugin(app: &mut App) {
         .add_systems(Update, robot::move_robot)
         .add_systems(Update, animation::animate_sprites);
 }
-
 pub fn gameplay_plugin(app: &mut App) {
     app.add_systems(FixedUpdate, (
         nanonaut::nanonaut_gravity,
         nanonaut::nanonaut_jump,
-        collision::detect_collision
+        collision::detect_collisions
     ).chain());
 }
 

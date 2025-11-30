@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+
 pub fn backgrounds_plugin(app: &mut App) {
     app.add_systems(Startup, spawn_ground)
         .add_systems(Startup, spawn_bg)
@@ -70,7 +71,7 @@ pub fn spawn_bg(
         sprite: Sprite {
             image: bg_img.clone(),
             flip_x: true,   // to hide seam between imgs bc edge colors don't match
-            ..Default::default()
+            ..default()
         },
         transform: Transform
             ::from_translation(Vec3::new(start_x + real_width, y_offset, 0.0))
@@ -100,7 +101,7 @@ pub fn spawn_bg(
 }
 
 pub fn scroll_bgs(
-    mut bgs: Query<(&mut Transform, &BgDimensions), With<Background>>,
+    mut bgs: Query<(&mut Transform, &BgDimensions)>,
     time: Res<Time>
 ) {
     let scroll_spd = 350.0;
