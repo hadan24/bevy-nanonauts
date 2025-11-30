@@ -19,6 +19,21 @@ fn spawn_ui(mut commands: Commands) {
         ..default()
     };
 
+    let placeholder = Node {
+        width: Val::Percent(100.0),
+        height: Val::Percent(100.0),
+        ..default()
+    };
+
+    commands.spawn((
+        container, children![
+            placeholder,
+            hp_bar()
+        ]
+    ));
+}
+
+fn hp_bar() -> impl Bundle {
     let full_bar = (
         // #201537 (32, 21, 55)
         BackgroundColor(Color::srgb_u8(32, 21, 55)),
@@ -43,19 +58,7 @@ fn spawn_ui(mut commands: Commands) {
         },
     );
 
-    let placeholder = Node {
-        width: Val::Percent(100.0),
-        height: Val::Percent(100.0),
-        ..default()
-    };
-
-    commands.spawn((
-        container,
-        children![
-            placeholder,
-            (full_bar, children![current_hp_bar])
-        ]
-    ));
+    (full_bar, children![current_hp_bar])
 }
 
 fn update_hp_bar(
