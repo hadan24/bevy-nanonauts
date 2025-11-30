@@ -1,16 +1,28 @@
 use bevy::prelude::*;
-use crate::animation;
+use crate::{
+    animation,
+    collision::NanonautCollided
+};
 
 /*
 - HP
 */
 const NANONAUT_WIDTH: u32 = 148;
 const NANONAUT_HEIGHT: u32 = 200;
+pub const MAX_HP: f32 = 100.0;
 // puts nanonaut on ground level, offset by 1/2 height bc centers are origins
 const NANONAUT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((NANONAUT_HEIGHT/2) as f32);
 
 #[derive(Component)]
 pub struct Nanonaut;
+
+#[derive(Component, Clone, Copy)]
+pub struct Hp(f32);
+impl Hp {
+    pub fn value(self) -> f32 {
+        self.0
+    }
+}
 
 #[derive(Component, Deref, DerefMut)]
 pub struct Velocity(Vec2);
@@ -51,6 +63,8 @@ pub fn spawn_nanonaut(
     commands.spawn((
         Nanonaut,
         dims,
+        Hp(MAX_HP),
+        Observer::new(nanonaut_damage),
         animation_bundle,
         KinematicsBundle {
             transform: Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0),
@@ -96,4 +110,11 @@ pub fn nanonaut_jump(
         vel.y = jump_spd;
         transform.translation.y += time.delta_secs() * vel.y;
     }
+}
+
+pub fn nanonaut_damage(
+    _collided: On<NanonautCollided>,
+    mut hp: Single<&mut Hp, With<Nanonaut>>
+) {
+    hp.0 -= 1.0;
 }

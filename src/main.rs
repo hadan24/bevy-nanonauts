@@ -21,6 +21,7 @@ fn main() {
         .add_plugins(bevy_nanonauts::camera_plugin)
         .add_plugins(bevy_nanonauts::animations_plugin)
         .add_plugins(bevy_nanonauts::backgrounds_plugin)
+        .add_plugins(bevy_nanonauts::hud_plugin)
         .add_plugins(bevy_nanonauts::gameplay_plugin)
         .add_systems(Update, bevy_nanonauts::close_on_esc)
         .run();

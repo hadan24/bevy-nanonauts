@@ -3,6 +3,7 @@ pub use bevy::prelude::*;
 mod animation;
 mod camera;
 mod collision;
+mod hud;
 mod nanonaut;
 mod robot;
 mod bg;
@@ -16,6 +17,7 @@ pub struct Dimensions(UVec2);
 
 pub use bg::backgrounds_plugin;
 pub use camera::camera_plugin;
+pub use hud::hud_plugin;
 
 pub fn animations_plugin(app: &mut App) {
     app.add_systems(Startup, nanonaut::spawn_nanonaut)
