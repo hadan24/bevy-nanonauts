@@ -16,15 +16,14 @@ pub(crate) use collision::NanonautCollidedEvent; // re-export for easier use acr
 #[derive(Component, Deref, DerefMut)]
 pub struct Dimensions(UVec2);
 
-pub use bg::backgrounds_plugin;
-pub use camera::camera_plugin;
 pub use hud::hud_plugin;
 
 pub fn animations_plugin(app: &mut App) {
     app.add_systems(Startup, nanonaut::spawn_nanonaut)
         .add_systems(Startup, robot::spawn_robot)
         .add_systems(Update, robot::move_robot)
-        .add_systems(Update, animation::animate_sprites);
+        .add_systems(Update, animation::animate_sprites)
+        .add_plugins((bg::backgrounds_plugin, camera::camera_plugin));
 }
 pub fn gameplay_plugin(app: &mut App) {
     app.add_systems(FixedUpdate, (

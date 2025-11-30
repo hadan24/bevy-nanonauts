@@ -2,9 +2,6 @@ use bevy::prelude::*;
 use crate::nanonaut::{Hp, MAX_HP, Nanonaut};
 
 
-#[derive(Component)]
-struct HpBar;
-
 pub fn hud_plugin(app: &mut App) {
     app.add_systems(Startup, spawn_ui)
         .add_systems(Update, update_hp_bar);
@@ -33,6 +30,8 @@ fn spawn_ui(mut commands: Commands) {
     ));
 }
 
+#[derive(Component)]
+struct HpBar;
 fn hp_bar() -> impl Bundle {
     let full_bar = (
         // #201537 (32, 21, 55)
@@ -41,7 +40,7 @@ fn hp_bar() -> impl Bundle {
         Node {
             width: Val::Percent(100.0),
             height: Val::Percent(70.0),
-            margin: UiRect::axes(Val::Px(10.0), Val::Auto),
+            margin: UiRect::vertical(Val::Auto).with_left(Val::Percent(2.0)),
             border: UiRect::all(Val::Px(4.0)),
             border_radius: BorderRadius::all(Val::Percent(30.0)),
             ..default()
@@ -51,11 +50,7 @@ fn hp_bar() -> impl Bundle {
         HpBar,
         // #FD2828 (253, 40, 40)
         BackgroundColor(Color::srgb_u8(253, 40, 40)),
-        Node {
-            width: Val::Percent(100.0),
-            height: Val::Percent(100.0),
-            ..default()
-        },
+        Node::DEFAULT,
     );
 
     (full_bar, children![current_hp_bar])
