@@ -1,5 +1,8 @@
 use bevy::prelude::*;
-use crate::nanonaut::{Hp, MAX_HP, Nanonaut};
+use crate::{
+    Score,
+    nanonaut::{Hp, MAX_HP, Nanonaut}
+};
 
 
 pub fn hud_plugin(app: &mut App) {
@@ -7,7 +10,7 @@ pub fn hud_plugin(app: &mut App) {
         .add_systems(Update, update_hp_bar);
 }
 
-fn spawn_ui(mut commands: Commands) {
+fn spawn_ui(mut commands: Commands, init_score: Res<Score>) {
     let container = Node {
         display: Display::Flex,
         width: Val::Percent(100.0),
@@ -16,16 +19,10 @@ fn spawn_ui(mut commands: Commands) {
         ..default()
     };
 
-    let placeholder = Node {
-        width: Val::Percent(100.0),
-        height: Val::Percent(100.0),
-        ..default()
-    };
-
     commands.spawn((
         container, children![
-            placeholder,
-            hp_bar()
+            hp_bar(),
+            score_text(&init_score)
         ]
     ));
 }
@@ -54,6 +51,26 @@ fn hp_bar() -> impl Bundle {
     );
 
     (full_bar, children![current_hp_bar])
+}
+
+fn score_text(init_score: &Score) -> impl Bundle {
+    let right_margin = 6.0;
+    let total_width = 100.0 - right_margin;
+    let score_node = Node {
+        width: Val::Percent(total_width),
+        height: Val::Percent(80.0),
+        margin: UiRect::vertical(Val::Auto).with_right(Val::Percent(right_margin)),
+        ..default()
+    };
+
+    (
+        Text::new(format!("{}", init_score.0)),
+        TextColor::BLACK,
+        TextFont::from_font_size(52.0),
+        TextLayout::new_with_justify(Justify::Right),
+        //Observer::new(|| {}),
+        score_node,
+    )
 }
 
 fn update_hp_bar(

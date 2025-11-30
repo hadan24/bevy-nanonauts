@@ -15,6 +15,8 @@ pub(crate) use collision::NanonautCollidedEvent; // re-export for easier use acr
 
 #[derive(Component, Deref, DerefMut)]
 pub struct Dimensions(UVec2);
+#[derive(Resource, Default)]
+struct Score(u32);
 
 pub use hud::hud_plugin;
 
@@ -26,11 +28,12 @@ pub fn animations_plugin(app: &mut App) {
         .add_plugins((bg::backgrounds_plugin, camera::camera_plugin));
 }
 pub fn gameplay_plugin(app: &mut App) {
-    app.add_systems(FixedUpdate, (
-        nanonaut::nanonaut_gravity,
-        nanonaut::nanonaut_jump,
-        collision::detect_collisions
-    ).chain());
+    app.init_resource::<Score>()
+        .add_systems(FixedUpdate, (
+            nanonaut::nanonaut_gravity,
+            nanonaut::nanonaut_jump,
+            collision::detect_collisions
+        ).chain());
 }
 
 // for faster iteration, from https://taintedcoders.com/bevy/windows
