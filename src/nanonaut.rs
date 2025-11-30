@@ -1,8 +1,5 @@
 use bevy::prelude::*;
-use crate::{
-    animation,
-    collision::NanonautCollided
-};
+use crate::{animation, NanonautCollidedEvent};
 
 
 const NANONAUT_WIDTH: u32 = 148;
@@ -110,7 +107,7 @@ pub fn nanonaut_jump(
 }
 
 fn nanonaut_damage(
-    _collided: On<NanonautCollided>,
+    _collided: On<NanonautCollidedEvent>,
     mut hp: Single<&mut Hp, With<Nanonaut>>
 ) {
     hp.0 -= 1.0;

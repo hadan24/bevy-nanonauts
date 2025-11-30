@@ -1,8 +1,8 @@
 // screen shake code based on bevy/examples/camera/2d_screen_shake.rs
-
 use bevy::prelude::*;
-use crate::collision::NanonautCollided;
+use crate::NanonautCollidedEvent;
 use rand::Rng;
+
 
 pub fn camera_plugin(app: &mut App) {
     app.add_systems(Startup, setup_camera)
@@ -44,7 +44,7 @@ fn setup_camera(mut commands: Commands) {
 }
 
 fn increase_trauma(
-    _collided: On<NanonautCollided>,
+    _collided: On<NanonautCollidedEvent>,
     mut camera_state: Single<&mut CameraShakeState>
 ) {
     camera_state.trauma += 0.4;

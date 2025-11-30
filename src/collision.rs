@@ -10,7 +10,7 @@ use crate::{
 
 
 #[derive(Event)]
-pub struct NanonautCollided;
+pub struct NanonautCollidedEvent;
 
 fn dimensions_to_aabb(location: &Transform, dims: &Dimensions) -> Aabb2d {
     let location = location.translation.truncate();
@@ -43,7 +43,7 @@ pub fn detect_collisions(
         };
 
         if nanonaut_box.intersects(&robot_box) {
-            commands.trigger(NanonautCollided);
+            commands.trigger(NanonautCollidedEvent);
         }
     }
 }

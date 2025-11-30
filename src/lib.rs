@@ -11,6 +11,7 @@ mod bg;
 pub const WINDOW_WIDTH: u32 = 800;
 pub const WINDOW_HEIGHT: u32 = 600;
 const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
+pub(crate) use collision::NanonautCollidedEvent; // re-export for easier use across mods
 
 #[derive(Component, Deref, DerefMut)]
 pub struct Dimensions(UVec2);
