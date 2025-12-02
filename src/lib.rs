@@ -17,6 +17,27 @@ pub(crate) use collision::NanonautCollidedEvent; // re-export for easier use acr
 pub struct Dimensions(UVec2);
 #[derive(Resource, Default)]
 struct Score(u32);
+#[derive(Resource)]
+struct ScoreRequirements {
+    no_damage: bool,
+    over_robot: bool
+}
+impl Default for ScoreRequirements {
+    fn default() -> Self {
+        ScoreRequirements { no_damage: true, over_robot: false }
+    }
+}
+impl ScoreRequirements {
+    fn fully_met(&self) -> bool {
+        self.no_damage && self.over_robot
+    }
+
+    fn reset_to_defaults(&mut self) {
+        let def = ScoreRequirements::default();
+        self.no_damage = def.no_damage;
+        self.over_robot = def.over_robot;
+    }
+}
 
 pub use hud::hud_plugin;
 
@@ -29,10 +50,12 @@ pub fn animations_plugin(app: &mut App) {
 }
 pub fn gameplay_plugin(app: &mut App) {
     app.init_resource::<Score>()
+        .init_resource::<ScoreRequirements>()
         .add_systems(FixedUpdate, (
             nanonaut::nanonaut_gravity,
             nanonaut::nanonaut_jump,
-            collision::detect_collisions
+            collision::detect_collisions,
+            collision::over_robots
         ).chain());
 }
 

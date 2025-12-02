@@ -28,8 +28,7 @@ pub fn detect_collisions(
     nanonaut: Single<(&Transform, &Dimensions), With<Nanonaut>>,
     robots: Query<(&Transform, &Dimensions), With<Robot>>
 ) {
-    let (location, dims) = nanonaut.into_inner();
-    let raw = dimensions_to_aabb(location, dims);
+    let raw = dimensions_to_aabb(nanonaut.0, nanonaut.1);
     let nanonaut_box = Aabb2d {
         min: raw.min + Vec2::new(25.0, 5.0),
         max: raw.max + Vec2::new(-40.0, -10.0)
@@ -44,6 +43,28 @@ pub fn detect_collisions(
 
         if nanonaut_box.intersects(&robot_box) {
             commands.trigger(NanonautCollidedEvent);
+        }
+    }
+}
+
+pub fn over_robots(
+    nanonaut: Single<(&Transform, &Dimensions), With<Nanonaut>>,
+    robots: Query<&Transform, With<Robot>>,
+    mut score_reqs: ResMut<crate::ScoreRequirements>
+) {
+    if nanonaut.0.translation.y <= crate::nanonaut::NANONAUT_GROUND_LEVEL {
+        return;
+    }
+
+    let raw = dimensions_to_aabb(nanonaut.0, nanonaut.1);
+    let nanonaut_box = Aabb2d {
+        min: raw.min + Vec2::new(25.0, 5.0),
+        max: raw.max + Vec2::new(-40.0, -10.0)
+    };
+    for r in robots {
+        let closest = nanonaut_box.closest_point(r.translation.truncate());
+        if closest.x == nanonaut_box.min.x {
+            score_reqs.over_robot = true;
         }
     }
 }

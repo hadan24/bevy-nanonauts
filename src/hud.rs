@@ -7,7 +7,8 @@ use crate::{
 
 pub fn hud_plugin(app: &mut App) {
     app.add_systems(Startup, spawn_ui)
-        .add_systems(Update, update_hp_bar);
+        .add_systems(Update, update_hp_bar)
+        .add_systems(Update, update_score);
 }
 
 fn spawn_ui(mut commands: Commands, init_score: Res<Score>) {
@@ -71,6 +72,13 @@ fn score_text(init_score: &Score) -> impl Bundle {
         //Observer::new(|| {}),
         score_node,
     )
+}
+fn update_score(
+    mut score_text: Single<&mut Text>,
+    score: Res<Score>
+) {
+    // Single -> Mut Text -> Text -> String
+    ***score_text = format!("{}", score.0);
 }
 
 fn update_hp_bar(

@@ -1,12 +1,12 @@
 use bevy::prelude::*;
-use crate::{animation, NanonautCollidedEvent};
+use crate::animation;
 
 
 const NANONAUT_WIDTH: u32 = 148;
 const NANONAUT_HEIGHT: u32 = 200;
 pub const MAX_HP: f32 = 100.0;
 // puts nanonaut on ground level, offset by 1/2 height bc centers are origins
-const NANONAUT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((NANONAUT_HEIGHT/2) as f32);
+pub const NANONAUT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((NANONAUT_HEIGHT/2) as f32);
 
 #[derive(Component)]
 pub struct Nanonaut;
@@ -72,6 +72,8 @@ pub fn spawn_nanonaut(
 // https://youtu.be/hG9SzQxaCm8?si=zMId1NRJDpq9K1Dk
 pub fn nanonaut_gravity(
     kinematics: Single<(&mut Transform, &mut Velocity), With<Nanonaut>>,
+    score_reqs: Res<crate::ScoreRequirements>,
+    mut score: ResMut<crate::Score>,
     time: Res<Time>
 ) {
     let (mut transform, mut vel) = kinematics.into_inner();
@@ -87,6 +89,9 @@ pub fn nanonaut_gravity(
         transform.translation.y += vel.y * time.delta_secs();
     }
     else {
+        if vel.y < 0.0 && score_reqs.fully_met() {
+            score.0 += 1;
+        }
         vel.y = 0.0;
         transform.translation.y = NANONAUT_GROUND_LEVEL;
     }
@@ -95,6 +100,7 @@ pub fn nanonaut_gravity(
 pub fn nanonaut_jump(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     kinematics: Single<(&mut Transform, &mut Velocity), With<Nanonaut>>,
+    mut score_reqs: ResMut<crate::ScoreRequirements>,
     time: Res<Time>
 ) {
     let (mut transform, mut vel) = kinematics.into_inner();
@@ -103,12 +109,17 @@ pub fn nanonaut_jump(
     if keyboard_input.pressed(KeyCode::Space) && transform.translation.y <= NANONAUT_GROUND_LEVEL {
         vel.y = jump_spd;
         transform.translation.y += time.delta_secs() * vel.y;
+
+        // unsure why it must be reset here instead of in `else` block of `gravity`
+        score_reqs.reset_to_defaults();
     }
 }
 
 fn nanonaut_damage(
-    _collided: On<NanonautCollidedEvent>,
-    mut hp: Single<&mut Hp, With<Nanonaut>>
+    _collided: On<crate::NanonautCollidedEvent>,
+    mut hp: Single<&mut Hp, With<Nanonaut>>,
+    mut score_reqs: ResMut<crate::ScoreRequirements>
 ) {
     hp.0 -= 1.0;
+    score_reqs.no_damage = false;
 }
