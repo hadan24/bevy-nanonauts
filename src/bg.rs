@@ -106,7 +106,6 @@ pub fn scroll_bgs(
 ) {
     let scroll_spd = 350.0;
     let num_imgs = bgs.count() as f32;
-    //let x_align_offset = 4.0;
 
     for (mut bg, dims) in &mut bgs {
         let real_width = dims.width * dims.scale;
@@ -114,7 +113,7 @@ pub fn scroll_bgs(
 
         // -100 to ENSURE furthest left img is off-screen (avoids empty space during shakes)
         if right_edge < (SCREEN_LEFT - 100.0) {
-            bg.translation.x += real_width * num_imgs;// - x_align_offset;
+            bg.translation.x += real_width * num_imgs;
         }
         bg.translation.x -= time.delta_secs()*scroll_spd;
     }

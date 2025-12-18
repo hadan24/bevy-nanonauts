@@ -14,7 +14,7 @@ const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
 pub(crate) use collision::NanonautCollidedEvent; // re-export for easier use across mods
 
 #[derive(Component, Deref, DerefMut)]
-pub struct Dimensions(UVec2);
+struct Dimensions(UVec2);
 #[derive(Resource, Default)]
 struct Score(u32);
 #[derive(Resource)]

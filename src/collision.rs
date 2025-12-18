@@ -10,7 +10,7 @@ use crate::{
 
 
 #[derive(Event)]
-pub struct NanonautCollidedEvent;
+pub struct NanonautCollidedEvent;   // Collision(Entity, Entity)
 
 fn dimensions_to_aabb(location: &Transform, dims: &Dimensions) -> Aabb2d {
     let location = location.translation.truncate();

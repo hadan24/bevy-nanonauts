@@ -69,7 +69,6 @@ fn score_text(init_score: &Score) -> impl Bundle {
         TextColor::BLACK,
         TextFont::from_font_size(52.0),
         TextLayout::new_with_justify(Justify::Right),
-        //Observer::new(|| {}),
         score_node,
     )
 }
