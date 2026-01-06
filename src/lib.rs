@@ -34,8 +34,9 @@ impl ScoreRequirements {
         self.no_damage && self.over_robot
     }
 
-    fn reset_to_defaults(&mut self) {
-        let def = ScoreRequirements::default();
+    fn reset(&mut self) {
+        // this is weird, prob shouldn't need dummy default??
+        let def = Self::default();
         self.no_damage = def.no_damage;
         self.over_robot = def.over_robot;
     }

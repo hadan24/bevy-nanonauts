@@ -111,7 +111,7 @@ pub fn nanonaut_jump(
         transform.translation.y += time.delta_secs() * vel.y;
 
         // unsure why it must be reset here instead of in `else` block of `gravity`
-        score_reqs.reset_to_defaults();
+        score_reqs.reset();
     }
 }
 
