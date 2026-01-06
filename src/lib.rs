@@ -1,7 +1,9 @@
 pub use bevy::prelude::*;
+use systems::{
+    animation,
+    camera
+};
 
-mod animation;
-mod camera;
 mod collision;
 mod hud;
 mod nanonaut;
@@ -46,7 +48,7 @@ pub fn animations_plugin(app: &mut App) {
         .add_systems(Startup, robot::spawn_robot)
         .add_systems(Update, robot::move_robot)
         .add_systems(Update, animation::animate_sprites)
-        .add_plugins((bg::backgrounds_plugin, camera::camera_plugin));
+        .add_plugins((bg::backgrounds_plugin, camera::camera_plugin::<NanonautCollidedEvent>));
 }
 pub fn gameplay_plugin(app: &mut App) {
     app.init_resource::<Score>()

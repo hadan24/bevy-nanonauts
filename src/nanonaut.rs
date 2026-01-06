@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::animation;
+use systems::animation;
 
 
 const NANONAUT_WIDTH: u32 = 148;

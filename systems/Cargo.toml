@@ -4,3 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+bevy = { git = "https://github.com/bevyengine/bevy.git", rev = "7ad5fb7", features = ["dynamic_linking"] }
+perlin_noise = "1.0.1"

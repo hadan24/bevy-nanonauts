@@ -1,10 +1,9 @@
 // screen shake code based on bevy/examples/camera/2d_screen_shake.rs
 use bevy::prelude::*;
-use crate::NanonautCollidedEvent;
 
 
-pub fn camera_plugin(app: &mut App) {
-    app.add_systems(Startup, setup_camera)
+pub fn camera_plugin<T: Event>(app: &mut App) {
+    app.add_systems(Startup, setup_camera::<T>)
         .add_systems(PreUpdate, reset_camera)
     /*
         Transform = local to entity, is relative to parent frame of reference
@@ -30,10 +29,10 @@ struct CameraShakeConfig {
     noise_speed: f32,
 }
 
-fn setup_camera(mut commands: Commands) {
+fn setup_camera<T: Event>(mut commands: Commands) {
     commands.spawn((
         Camera2d,
-        Observer::new(increase_trauma),
+        Observer::new(increase_trauma::<T>),
         CameraShakeConfig {
             trauma_decay_per_second: 0.5,
             max_translation: 20.0,
@@ -42,8 +41,8 @@ fn setup_camera(mut commands: Commands) {
     ));
 }
 
-fn increase_trauma(
-    _collided: On<NanonautCollidedEvent>,
+fn increase_trauma<T: Event>(
+    _collided: On<T>,
     mut camera_state: Single<&mut CameraShakeState>
 ) {
     camera_state.trauma += 0.4;
