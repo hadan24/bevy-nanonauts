@@ -37,7 +37,8 @@ pub fn spawn_robot(
         Robot,
         dims,
         animation_bundle,
-        Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.0),
+        // z = 1.1 to be just above nanonaut
+        Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.1),
     ));
 }
 

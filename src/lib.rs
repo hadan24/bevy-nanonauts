@@ -45,11 +45,15 @@ impl ScoreRequirements {
 
 pub use hud::hud_plugin;
 
+fn in_play_mode(mode: Res<GameMode>) -> bool {
+    *mode == GameMode::Playing
+}
 pub fn animations_plugin(app: &mut App) {
-    app.add_systems(Startup, nanonaut::spawn_nanonaut)
-        .add_systems(Startup, robot::spawn_robot)
-        .add_systems(Update, robot::move_robot)
-        .add_systems(Update, animation::animate_sprites)
+    app.add_systems(Startup, (nanonaut::spawn_nanonaut, robot::spawn_robot))
+        .add_systems(
+            Update,
+            (robot::move_robot, animation::animate_sprites).run_if(in_play_mode)
+        )
         .add_plugins((bg::backgrounds_plugin, camera::camera_plugin::<NanonautCollidedEvent>));
 }
 pub fn gameplay_plugin(app: &mut App) {
@@ -61,7 +65,7 @@ pub fn gameplay_plugin(app: &mut App) {
             nanonaut::nanonaut_jump,
             collision::detect_collisions,
             collision::over_robots
-        ).chain().run_if(|mode: Res<GameMode>| *mode == GameMode::Playing));
+        ).chain().run_if(in_play_mode));
 }
 
 // for faster iteration, from https://taintedcoders.com/bevy/windows
