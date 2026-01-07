@@ -118,8 +118,12 @@ pub fn nanonaut_jump(
 fn nanonaut_damage(
     _collided: On<crate::NanonautCollidedEvent>,
     mut hp: Single<&mut Hp, With<Nanonaut>>,
-    mut score_reqs: ResMut<crate::ScoreRequirements>
+    mut score_reqs: ResMut<crate::ScoreRequirements>,
+    mut game_mode: ResMut<crate::GameMode>
 ) {
     hp.0 -= 1.0;
     score_reqs.no_damage = false;
+    if hp.0 <= 0.0 {
+        *game_mode = game_mode.change();
+    }
 }

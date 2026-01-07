@@ -1,7 +1,8 @@
 pub use bevy::prelude::*;
 use systems::{
     animation,
-    camera
+    camera,
+    game_modes::GameMode
 };
 
 mod collision;
@@ -54,12 +55,13 @@ pub fn animations_plugin(app: &mut App) {
 pub fn gameplay_plugin(app: &mut App) {
     app.init_resource::<Score>()
         .init_resource::<ScoreRequirements>()
+        .init_resource::<GameMode>()
         .add_systems(FixedUpdate, (
             nanonaut::nanonaut_gravity,
             nanonaut::nanonaut_jump,
             collision::detect_collisions,
             collision::over_robots
-        ).chain());
+        ).chain().run_if(|mode: Res<GameMode>| *mode == GameMode::Playing));
 }
 
 // for faster iteration, from https://taintedcoders.com/bevy/windows

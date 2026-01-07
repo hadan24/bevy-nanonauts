@@ -8,7 +8,12 @@ use crate::{
 pub fn hud_plugin(app: &mut App) {
     app.add_systems(Startup, spawn_ui)
         .add_systems(Update, update_hp_bar)
-        .add_systems(Update, update_score);
+        .add_systems(Update, update_score)
+        .add_systems(Update, game_over_text
+            .run_if(|game_mode: Res<crate::GameMode>|
+                *game_mode == crate::GameMode::GameOver
+            )
+        );
 }
 
 fn spawn_ui(mut commands: Commands, init_score: Res<Score>) {
@@ -86,4 +91,26 @@ fn update_hp_bar(
 ) {
     let hp_percentage = nanonaut_hp.value() / MAX_HP * 100.0;
     current_hp_bar.width = Val::Percent(hp_percentage);
+}
+
+fn game_over_text(
+    mut commands: Commands
+) {
+    let container = Node {
+        width: Val::Percent(75.0),
+        height: Val::Percent(50.0),
+        margin: UiRect::all(Val::Auto),
+        justify_content: JustifyContent::Center,
+        ..default()
+    };
+
+    let text = (
+        Text::new("GAME OVER"),
+        TextColor::BLACK,
+        TextFont::from_font_size(80.0),
+    );
+
+    commands.spawn((
+        container, children![text]
+    ));
 }
