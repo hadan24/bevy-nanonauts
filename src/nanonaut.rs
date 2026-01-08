@@ -90,7 +90,7 @@ pub fn nanonaut_gravity(
     }
     else {
         if vel.y < 0.0 && score_reqs.fully_met() {
-            score.0 += 1;
+            **score += 1;   // ResMut -> Score -> field
         }
         vel.y = 0.0;
         transform.translation.y = NANONAUT_GROUND_LEVEL;

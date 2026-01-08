@@ -70,7 +70,7 @@ fn score_text(init_score: &Score) -> impl Bundle {
     };
 
     (
-        Text::new(format!("{}", init_score.0)),
+        Text::new(init_score.to_string()),
         TextColor::BLACK,
         TextFont::from_font_size(52.0),
         TextLayout::new_with_justify(Justify::Right),
@@ -81,8 +81,8 @@ fn update_score(
     mut score_text: Single<&mut Text>,
     score: Res<Score>
 ) {
-    // Single -> Mut Text -> Text -> String
-    ***score_text = format!("{}", score.0);
+    score_text.clear();
+    score_text.insert_str(0, score.to_string().as_str());
 }
 
 fn update_hp_bar(

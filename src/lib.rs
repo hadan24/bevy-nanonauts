@@ -11,37 +11,16 @@ mod nanonaut;
 mod robot;
 mod bg;
 
+mod resources;
+use resources::*;
+
 pub const WINDOW_WIDTH: u32 = 800;
 pub const WINDOW_HEIGHT: u32 = 600;
 const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
-pub(crate) use collision::NanonautCollidedEvent; // re-export for easier use across mods
+use collision::NanonautCollidedEvent; // re-export for easier use across mods
 
 #[derive(Component, Deref, DerefMut)]
 struct Dimensions(UVec2);
-#[derive(Resource, Default)]
-struct Score(u32);
-#[derive(Resource)]
-struct ScoreRequirements {
-    no_damage: bool,
-    over_robot: bool
-}
-impl Default for ScoreRequirements {
-    fn default() -> Self {
-        ScoreRequirements { no_damage: true, over_robot: false }
-    }
-}
-impl ScoreRequirements {
-    fn fully_met(&self) -> bool {
-        self.no_damage && self.over_robot
-    }
-
-    fn reset(&mut self) {
-        // this is weird, prob shouldn't need dummy default??
-        let def = Self::default();
-        self.no_damage = def.no_damage;
-        self.over_robot = def.over_robot;
-    }
-}
 
 pub use hud::hud_plugin;
 
