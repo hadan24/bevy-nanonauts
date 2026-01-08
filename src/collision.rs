@@ -3,7 +3,6 @@ use bevy::{
     math::bounding::{Aabb2d, IntersectsVolume},
 };
 use crate::{
-    Dimensions,
     nanonaut::Nanonaut,
     robot::Robot
 };
@@ -12,30 +11,30 @@ use crate::{
 #[derive(Event)]
 pub struct NanonautCollidedEvent;   // Collision(Entity, Entity)
 
-fn dimensions_to_aabb(location: &Transform, dims: &Dimensions) -> Aabb2d {
-    let location = location.translation.truncate();
-    let dims = dims.as_vec2() / 2.0;
+fn aabb_from_transform(transform: &Transform) -> Aabb2d {
+    let location = transform.translation.truncate();
+    let scale = transform.scale.truncate() / 2.0;
 
     Aabb2d {
-        min: location - dims,
-        max: location + dims
+        min: location - scale,
+        max: location + scale
     }
 }
 
 // AABB dimensions tweaked w/ trial+error
 pub fn detect_collisions(
     mut commands: Commands,
-    nanonaut: Single<(&Transform, &Dimensions), With<Nanonaut>>,
-    robots: Query<(&Transform, &Dimensions), With<Robot>>
+    nanonaut: Single<&Transform, With<Nanonaut>>,
+    robots: Query<&Transform, With<Robot>>
 ) {
-    let raw = dimensions_to_aabb(nanonaut.0, nanonaut.1);
+    let raw = aabb_from_transform(*nanonaut);
     let nanonaut_box = Aabb2d {
         min: raw.min + Vec2::new(25.0, 5.0),
         max: raw.max + Vec2::new(-40.0, -10.0)
     };
     
-    for (location, dims) in &robots {
-        let raw = dimensions_to_aabb(location, dims);
+    for r_transform in &robots {
+        let raw = aabb_from_transform(r_transform);
         let robot_box = Aabb2d {
             min: raw.min + Vec2::new(15.0, 5.0),
             max: raw.max + Vec2::new(-25.0, -15.0)
@@ -48,15 +47,15 @@ pub fn detect_collisions(
 }
 
 pub fn over_robots(
-    nanonaut: Single<(&Transform, &Dimensions), With<Nanonaut>>,
+    nanonaut: Single<&Transform, With<Nanonaut>>,
     robots: Query<&Transform, With<Robot>>,
     mut score_reqs: ResMut<crate::ScoreRequirements>
 ) {
-    if nanonaut.0.translation.y <= crate::nanonaut::NANONAUT_GROUND_LEVEL {
+    if nanonaut.translation.y <= crate::nanonaut::NANONAUT_GROUND_LEVEL {
         return;
     }
 
-    let raw = dimensions_to_aabb(nanonaut.0, nanonaut.1);
+    let raw = aabb_from_transform(*nanonaut);
     let nanonaut_box = Aabb2d {
         min: raw.min + Vec2::new(25.0, 5.0),
         max: raw.max + Vec2::new(-40.0, -10.0)

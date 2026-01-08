@@ -2,9 +2,9 @@ use bevy::prelude::*;
 use systems::animation;
 
 
-const ROBOT_WIDTH: u32 = 142;
-const ROBOT_HEIGHT: u32 = 141;
-const ROBOT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((ROBOT_HEIGHT/2) as f32);
+const ROBOT_WIDTH: f32 = 142.0;
+const ROBOT_HEIGHT: f32 = 141.0;
+const ROBOT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + (ROBOT_HEIGHT / 2.0);
 
 #[derive(Component)]
 pub struct Robot;
@@ -14,31 +14,32 @@ pub fn spawn_robot(
     assets: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
 ) {
-    let dims = crate::Dimensions(UVec2 { x: ROBOT_WIDTH, y: ROBOT_HEIGHT });
     let texture = assets.load("animatedRobot.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(
-            dims.0,
+            UVec2::new(ROBOT_WIDTH as u32, ROBOT_HEIGHT as u32),
             3, 3,
             None, Some(UVec2::Y)
         )
     );
     let frames = animation::AnimationFrames::new(0, 7);
     let animation_bundle = animation::AnimatedSprite {
-        sprite: Sprite::from_atlas_image(
-            texture,
-            TextureAtlas { layout, index: frames.first() }
-        ),
+        sprite: Sprite {
+            image: texture,
+            texture_atlas: Some(TextureAtlas { layout, index: frames.first() }),
+            custom_size: Some(Vec2::new(1.0, 1.0)),
+            ..default()
+        },
         frames,
         timer: animation::AnimationTimer(Timer::from_seconds(0.1, TimerMode::Repeating)),
     };
 
     commands.spawn((
         Robot,
-        dims,
         animation_bundle,
         // z = 1.1 to be just above nanonaut
-        Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.1),
+        Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.1)
+            .with_scale(Vec3::new(ROBOT_WIDTH, ROBOT_HEIGHT, 1.0))
     ));
 }
 
@@ -50,7 +51,7 @@ pub fn move_robot(
     let screen_left = -((crate::WINDOW_WIDTH / 2) as f32);
 
     for mut t in transforms {
-        t.translation.x = if t.translation.x < (screen_left - ROBOT_WIDTH as f32) {
+        t.translation.x = if t.translation.x < (screen_left - ROBOT_WIDTH) {
             t.translation.x + ((crate::WINDOW_WIDTH * 2) as f32)
         }
         else {

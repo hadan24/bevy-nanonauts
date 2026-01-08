@@ -19,8 +19,6 @@ pub const WINDOW_HEIGHT: u32 = 600;
 const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
 use collision::NanonautCollidedEvent; // re-export for easier use across mods
 
-#[derive(Component, Deref, DerefMut)]
-struct Dimensions(UVec2);
 
 pub use hud::hud_plugin;
 

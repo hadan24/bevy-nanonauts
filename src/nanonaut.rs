@@ -2,11 +2,11 @@ use bevy::prelude::*;
 use systems::animation;
 
 
-const NANONAUT_WIDTH: u32 = 148;
-const NANONAUT_HEIGHT: u32 = 200;
+const NANONAUT_WIDTH: f32 = 148.0;
+const NANONAUT_HEIGHT: f32 = 200.0;
 pub const MAX_HP: f32 = 100.0;
 // puts nanonaut on ground level, offset by 1/2 height bc centers are origins
-pub const NANONAUT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + ((NANONAUT_HEIGHT/2) as f32);
+pub const NANONAUT_GROUND_LEVEL: f32 = crate::GROUND_LEVEL + (NANONAUT_HEIGHT / 2.0);
 
 #[derive(Component)]
 pub struct Nanonaut;
@@ -32,21 +32,22 @@ pub fn spawn_nanonaut(
     assets: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
 ) {
-    let dims = crate::Dimensions(UVec2 { x: NANONAUT_WIDTH, y: NANONAUT_HEIGHT });
     let texture = assets.load("animatedNanonaut.png");
     let layout = texture_atlas_layouts.add(
         TextureAtlasLayout::from_grid(
-            dims.0,
+            UVec2::new(NANONAUT_WIDTH as u32, NANONAUT_HEIGHT as u32),
             5, 2, 
             None, None
         )
     );
     let frames = animation::AnimationFrames::new(0, 6);
     let animation_bundle = animation::AnimatedSprite {
-        sprite: Sprite::from_atlas_image(
-            texture,
-            TextureAtlas { layout, index: frames.first() }
-        ),
+        sprite: Sprite {
+            image: texture,
+            texture_atlas: Some(TextureAtlas { layout, index: frames.first() }),
+            custom_size: Some(Vec2::new(1.0, 1.0)),
+            ..default()
+        },
         frames,
         timer: animation::AnimationTimer(Timer::from_seconds(0.08, TimerMode::Repeating))
     };
@@ -56,12 +57,12 @@ pub fn spawn_nanonaut(
 
     commands.spawn((
         Nanonaut,
-        dims,
         Hp(MAX_HP),
         Observer::new(nanonaut_damage),
         animation_bundle,
         KinematicsBundle {
-            transform: Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0),
+            transform: Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0)
+                .with_scale(Vec3::new(NANONAUT_WIDTH, NANONAUT_HEIGHT, 1.0)),
             velocity: Velocity(Vec2::ZERO),
         }
     ));
