@@ -27,10 +27,10 @@ fn in_play_mode(mode: Res<GameMode>) -> bool {
 }
 pub fn animations_plugin(app: &mut App) {
     app.add_systems(Startup, (nanonaut::spawn_nanonaut, robot::spawn_robot))
-        .add_systems(
-            Update,
-            (robot::move_robot, animation::animate_sprites).run_if(in_play_mode)
-        )
+        .add_systems(Update, (
+            robot::move_robot,
+            animation::animate_sprites
+        ).run_if(in_play_mode))
         .add_plugins((bg::backgrounds_plugin, camera::camera_plugin::<NanonautCollidedEvent>));
 }
 pub fn gameplay_plugin(app: &mut App) {

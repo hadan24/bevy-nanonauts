@@ -1,15 +1,14 @@
 use bevy::prelude::*;
 use crate::{
     Score,
-    nanonaut::{Hp, MAX_HP, Nanonaut}
+    nanonaut::{Hp, MAX_HP}
 };
 
 
 pub fn hud_plugin(app: &mut App) {
     app.add_systems(Startup, spawn_ui)
-        .add_systems(Update, update_hp_bar)
-        .add_systems(Update, update_score)
-        .add_systems(Update, game_over_text
+        .add_systems(Update, (update_hp_bar, update_score))
+        .add_systems(Update, game_over_screen
             .run_if(|game_mode: Res<crate::GameMode>|
                 *game_mode == crate::GameMode::GameOver
             )
@@ -87,20 +86,27 @@ fn update_score(
 
 fn update_hp_bar(
     mut current_hp_bar: Single<&mut Node, With<HpBar>>,
-    nanonaut_hp: Single<&Hp, With<Nanonaut>>
+    nanonaut_hp: Single<&Hp>
 ) {
     let hp_percentage = nanonaut_hp.value() / MAX_HP * 100.0;
     current_hp_bar.width = Val::Percent(hp_percentage);
 }
 
-fn game_over_text(
+fn game_over_screen(
     mut commands: Commands
 ) {
-    let container = Node {
-        width: Val::Percent(75.0),
+    let background_node = Node {
+        display: Display::Flex,
+        width: Val::Percent(100.0),
+        height: Val::Percent(100.0),
+        justify_content: JustifyContent::Center,
+        ..default()
+    };
+
+    let text_container = Node {
+        width: Val::Percent(100.0),
         height: Val::Percent(50.0),
         margin: UiRect::all(Val::Auto),
-        justify_content: JustifyContent::Center,
         ..default()
     };
 
@@ -108,9 +114,13 @@ fn game_over_text(
         Text::new("GAME OVER"),
         TextColor::BLACK,
         TextFont::from_font_size(80.0),
+        TextLayout::new_with_justify(Justify::Center),
+        text_container
     );
 
     commands.spawn((
-        container, children![text]
+        background_node,
+        BackgroundColor(Color::linear_rgba(0.9, 0.9, 0.9, 0.01)),
+        children![text]
     ));
 }
