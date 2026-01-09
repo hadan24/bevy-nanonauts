@@ -2,10 +2,10 @@
 use bevy::prelude::*;
 
 
-#[derive(Component, Deref, DerefMut)]   // deref to easily call Timer fns on this
+#[derive(Component, Clone, Deref, DerefMut)]    // deref to easily call Timer fns on this
 pub struct AnimationTimer(pub Timer);
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct AnimationFrames {
     first: usize,
     last: usize
@@ -24,7 +24,7 @@ impl AnimationFrames {
     }
 }
 
-#[derive(Bundle)]
+#[derive(Bundle, Clone)]
 pub struct AnimatedSprite {
     pub sprite: Sprite,
     pub frames: AnimationFrames,
