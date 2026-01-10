@@ -1,5 +1,6 @@
 // screen shake code based on bevy/examples/camera/2d_screen_shake.rs
 use bevy::prelude::*;
+use noise::{Perlin, NoiseFn};
 
 
 pub fn camera_plugin<T: Event>(app: &mut App) {
@@ -65,10 +66,10 @@ fn shake_camera(
     
     // apply shake
     let multiplier = 255.0 * config.max_translation * state.trauma * state.trauma;
-    let rng = perlin_noise::PerlinNoise::new();
+    let rng = Perlin::new(3);
     let t = time.elapsed_secs_f64() * (config.noise_speed as f64);
-    let shake_x = (rng.get(t + 100.0) as f32) * multiplier;
-    let shake_y = (rng.get(t + 200.0) as f32) * multiplier;
+    let shake_x = (rng.get([t + 100.0]) as f32) * multiplier;
+    let shake_y = (rng.get([t + 200.0]) as f32) * multiplier;
     transform.translation += Vec3::new(shake_x, shake_y, 0.0);
 
     // gradually phase out shakes

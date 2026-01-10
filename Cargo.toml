@@ -13,6 +13,10 @@ bevy = { git = "https://github.com/bevyengine/bevy.git", rev = "7ad5fb7", featur
 rand = "0.9.2"
 systems = { path = "systems" }
 
+[target.'cfg(wasm32)'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
+wasm-bindgen = "0.2.106"
+
 # Enable lots of performance optimization in the dev profile for dependencies.
 [profile.dev.package."*"]
 opt-level = 3

@@ -1,11 +1,10 @@
 use bevy::prelude::*;
-use crate::in_play_mode;
 
 
 pub fn backgrounds_plugin(app: &mut App) {
     app.add_systems(Startup, spawn_ground)
         .add_systems(Startup, spawn_bg)
-        .add_systems(Update, scroll_bgs.run_if(in_play_mode));
+        .add_systems(Update, scroll_bgs.run_if(crate::in_play_mode));
 }
 
 pub fn spawn_ground(

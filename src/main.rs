@@ -1,4 +1,7 @@
-use bevy::window::WindowResolution;
+use bevy::{
+    asset::AssetMetaCheck,
+    window::WindowResolution
+};
 use bevy_nanonauts::*;
 
 fn main() {
@@ -17,6 +20,11 @@ fn main() {
             .set(window_settings)
             // nearest sampling, to prevent white outlines on sprites
             .set(ImagePlugin::default_nearest())
+            // for WASM, thinks images are meta files for some reason
+            .set(AssetPlugin {
+                meta_check: AssetMetaCheck::Never,
+                ..default()
+            })
         )
         .add_plugins(bevy_nanonauts::animations_plugin)
         .add_plugins(bevy_nanonauts::hud_plugin)
