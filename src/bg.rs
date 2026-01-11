@@ -12,21 +12,26 @@ pub fn spawn_ground(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>
 ) {
-    let gnd_rect = meshes.add(Rectangle::new((crate::WINDOW_WIDTH as f32) * 2.0, 100.0));
+    // larger ground rect + offset keeps nanonaut at same place while also
+    // preventing camera from showing "out of bounds" when shaking
+    let gnd_offset = 25.0;
+    let gnd_rect = meshes.add(Rectangle::new(
+        (crate::WINDOW_WIDTH as f32) * 2.0,
+        100.0 + (gnd_offset * 2.0)
+    ));
     // forest green #228b22
     let gnd_color = materials.add(Color::srgb_u8(34, 139, 34));
 
     commands.spawn((
         Mesh2d(gnd_rect),
         MeshMaterial2d(gnd_color),
-        Transform::from_xyz(0.0, crate::GROUND_LEVEL, 0.1)
+        Transform::from_xyz(0.0, crate::GROUND_LEVEL - gnd_offset, 0.1)
     ));
 }
 
 
 #[derive(Component, Copy, Clone)]
 pub struct Background;
-
 #[derive(Component, Copy, Clone)]
 pub struct BgDimensions {
     width: f32,

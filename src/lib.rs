@@ -16,7 +16,7 @@ use resources::*;
 
 pub const WINDOW_WIDTH: u32 = 800;
 pub const WINDOW_HEIGHT: u32 = 600;
-const GROUND_LEVEL: f32 = -250.0;   // center of "ground plane" rect, 100px tall
+const GROUND_LEVEL: f32 = -250.0;   // where nanonaut runs + center of ground rect w/o camera shake
 use collision::NanonautCollidedEvent; // re-export for easier use across mods
 
 

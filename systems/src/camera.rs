@@ -65,7 +65,7 @@ fn shake_camera(
     state.original_position = *transform;
     
     // apply shake
-    let multiplier = 255.0 * config.max_translation * state.trauma * state.trauma;
+    let multiplier = 240.0 * config.max_translation * state.trauma * state.trauma;
     let rng = Perlin::new(3);
     let t = time.elapsed_secs_f64() * (config.noise_speed as f64);
     let shake_x = (rng.get([t + 100.0]) as f32) * multiplier;
