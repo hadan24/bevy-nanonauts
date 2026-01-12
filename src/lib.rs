@@ -31,14 +31,17 @@ pub fn animations_plugin(app: &mut App) {
             robot::move_robot,
             animation::animate_sprites
         ).run_if(in_play_mode))
+        .add_systems(Update, nanonaut::nanonaut_death
+            .run_if(|mode: Res<GameMode>| *mode == GameMode::GameOver)
+        )
         .add_plugins((bg::backgrounds_plugin, camera::camera_plugin::<NanonautCollidedEvent>));
 }
 pub fn gameplay_plugin(app: &mut App) {
     app.init_resource::<Score>()
         .init_resource::<ScoreRequirements>()
         .init_resource::<GameMode>()
+        .add_systems(FixedUpdate, nanonaut::nanonaut_gravity)
         .add_systems(FixedUpdate, (
-            nanonaut::nanonaut_gravity,
             nanonaut::nanonaut_jump,
             collision::detect_collisions,
             collision::over_robots

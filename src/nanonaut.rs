@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    sprite::Anchor
+};
 use systems::animation;
 
 
@@ -19,8 +22,11 @@ impl Hp {
     }
 }
 
-#[derive(Component, Deref, DerefMut)]
-pub struct Velocity(Vec2);
+#[derive(Component)]
+pub struct Velocity {
+    linear: Vec2,
+    rotation: f32   // rad per sec
+}
 #[derive(Bundle)]
 struct KinematicsBundle {
     transform: Transform,
@@ -63,7 +69,7 @@ pub fn spawn_nanonaut(
         KinematicsBundle {
             transform: Transform::from_xyz(nanonaut_x, NANONAUT_GROUND_LEVEL + 300.0, 1.0)
                 .with_scale(Vec3::new(NANONAUT_WIDTH, NANONAUT_HEIGHT, 1.0)),
-            velocity: Velocity(Vec2::ZERO),
+            velocity: Velocity { linear: Vec2::ZERO, rotation: 0.1 }
         }
     ));
 }
@@ -80,21 +86,21 @@ pub fn nanonaut_gravity(
     let (mut transform, mut vel) = kinematics.into_inner();
 
     if transform.translation.y > NANONAUT_GROUND_LEVEL {
-        let g = if vel.y > 0.0 { 
+        let g = if vel.linear.y > 0.0 { 
             -800.0
         } else {    // for a faster fall
             -1600.0
         };
 
-        vel.y += g * time.delta_secs();
-        transform.translation.y += vel.y * time.delta_secs();
+        vel.linear.y += g * time.delta_secs();
+        transform.translation.y += vel.linear.y * time.delta_secs();
     }
     else {
-        if vel.y < 0.0 && score_reqs.fully_met() {
+        if vel.linear.y < 0.0 && score_reqs.fully_met() {
             **score += 1;   // ResMut -> Score -> field
         }
-        vel.y = 0.0;
-        transform.translation.y = NANONAUT_GROUND_LEVEL;
+        vel.linear.y = 0.0;
+        //transform.translation.y = NANONAUT_GROUND_LEVEL;
     }
 }
 
@@ -108,8 +114,8 @@ pub fn nanonaut_jump(
     let jump_spd = 500.0;
 
     if keyboard_input.pressed(KeyCode::Space) && transform.translation.y <= NANONAUT_GROUND_LEVEL {
-        vel.y = jump_spd;
-        transform.translation.y += time.delta_secs() * vel.y;
+        vel.linear.y = jump_spd;
+        transform.translation.y += time.delta_secs() * vel.linear.y;
 
         // unsure why it must be reset here instead of in `else` block of `gravity`
         score_reqs.reset();
@@ -126,5 +132,30 @@ fn nanonaut_damage(
     score_reqs.no_damage = false;
     if hp.0 <= 0.0 {
         *game_mode = game_mode.change();
+    }
+}
+
+pub fn nanonaut_death(
+    nanonaut: Single<(Entity, &mut Transform, &mut Velocity), With<Nanonaut>>,
+    mut commands: Commands,
+    time: Res<Time>
+) {
+    let (id, mut transform, mut vel) = nanonaut.into_inner();
+
+    // reset sprite to more easily rotate around bottom center
+    commands.entity(id).insert(Anchor::BOTTOM_CENTER);
+    transform.translation.y = crate::GROUND_LEVEL;
+
+    let ds = time.delta_secs();
+    let nanonaut_euler_z = transform.rotation.to_euler(EulerRot::XYZ).2;
+
+    let accel = if nanonaut_euler_z > -std::f32::consts::FRAC_PI_6 {
+        50.0
+    } else {
+        800.0
+    };
+    vel.rotation += accel * ds * ds;
+    if nanonaut_euler_z > -std::f32::consts::FRAC_PI_2 {
+        transform.rotate_z(-vel.rotation * ds);
     }
 }
