@@ -59,7 +59,7 @@ pub fn spawn_robot(
         tag: Robot,
         sprite: animation_bundle,
         // z = 1.1 to be just above nanonaut
-        transform: Transform::from_xyz(crate::WINDOW_WIDTH as f32, ROBOT_GROUND_LEVEL, 1.1)
+        transform: Transform::from_xyz((crate::WINDOW_WIDTH as f32) + ROBOT_WIDTH, ROBOT_GROUND_LEVEL, 1.1)
             .with_scale(Vec3::new(ROBOT_WIDTH, ROBOT_HEIGHT, 1.0))
     };
     let robot2 = create_next_robot(&robot1);
