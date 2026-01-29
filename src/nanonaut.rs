@@ -118,14 +118,17 @@ pub fn nanonaut_gravity(
 
 pub fn nanonaut_jump(
     keyboard_input: Res<ButtonInput<KeyCode>>,
+    touch_input: Res<Touches>,
     kinematics: Single<(&mut Transform, &mut Velocity), With<Nanonaut>>,
     mut score_reqs: ResMut<crate::ScoreRequirements>,
     time: Res<Time>
 ) {
     let (mut transform, mut vel) = kinematics.into_inner();
     let jump_spd = 500.0;
+    let input = keyboard_input.pressed(KeyCode::Space) || touch_input.any_just_pressed();
 
-    if keyboard_input.pressed(KeyCode::Space) && transform.translation.y <= NANONAUT_GROUND_LEVEL {
+    if input && transform.translation.y <= NANONAUT_GROUND_LEVEL
+    {
         vel.linear.y = jump_spd;
         transform.translation.y += time.delta_secs() * vel.linear.y;
 

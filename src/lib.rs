@@ -48,6 +48,7 @@ pub fn gameplay_plugin(app: &mut App) {
         ).chain().run_if(in_play_mode));
 }
 
+#[cfg(debug_assertions)]
 // for faster iteration, from https://taintedcoders.com/bevy/windows
 pub fn close_on_esc(
     mut commands: Commands,
